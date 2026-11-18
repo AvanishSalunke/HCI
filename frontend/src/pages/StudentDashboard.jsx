@@ -87,7 +87,7 @@ function StudentDashboard() {
       
       fetchMessages();
 
-      socketRef.current = io(API_BASE);
+      socketRef.current = io(API_BASE, { auth: { token: getToken() } });
 
       socketRef.current.on('connect', () => {
         socketRef.current.emit('join_committee', currentUser.committee);
@@ -285,7 +285,7 @@ function StudentDashboard() {
                 <div className="form-row">
                   <div className="form-group" style={{ flex: 1 }}>
                     <label htmlFor="amount">Amount (in ₹)</label>
-                    <input type="number" id="amount" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="e.g., 1500" required />
+                    <input type="number" min="1" step="any" id="amount" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="e.g., 1500" required />
                   </div>
                   <div className="form-group" style={{ flex: 2 }}>
                     <label htmlFor="category">Category</label>
@@ -335,7 +335,7 @@ function StudentDashboard() {
                 </div>
                 <div className="form-group">
                   <label htmlFor="amountPledged">Amount Pledged (in ₹)</label>
-                  <input type="number" id="amountPledged" value={amountPledged} onChange={(e) => setAmountPledged(e.target.value)} placeholder="e.g., 50000" required />
+                  <input type="number" min="1" step="any" id="amountPledged" value={amountPledged} onChange={(e) => setAmountPledged(e.target.value)} placeholder="e.g., 50000" required />
                 </div>
                 <hr style={{border: 0, borderTop: '1px solid var(--border-color)', margin: '1.5rem 0'}} />
                 <div className="form-row">
