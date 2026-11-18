@@ -137,3 +137,22 @@
   .login-card-layout { flex-direction: column; }
   .login-identity-panel { border-radius: var(--border-radius) var(--border-radius) 0 0; }
 }
+
+
+/* -- Mobile -- */
+@media (max-width: 760px) {
+  .login-page-fullscreen-wrapper {
+    width: 100%;
+    height: auto;
+    min-height: calc(100vh - 110px);
+    padding: 1.25rem 1rem 2rem;
+    overflow: visible;
+    align-items: flex-start;
+  }
+  .login-card-layout { flex-direction: column; max-width: 460px; }
+  .login-identity-panel { flex-basis: auto; padding: 1.75rem 1.25rem; }
+  .committee-login-logo { width: 84px; height: 84px; padding: 0.7rem; margin-bottom: 1rem; }
+  .login-identity-panel h2 { font-size: 1.35rem; }
+  .login-identity-panel p { font-size: 0.92rem; }
+  .login-form-panel { flex-basis: auto; padding: 1.5rem 1.25rem; }
+}
