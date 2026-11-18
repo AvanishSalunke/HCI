@@ -50,7 +50,7 @@ const createEvent = async (req, res) => {
 const getEvents = async (req, res) => {
   try {
     const filter = req.query.committee ? { committee: String(req.query.committee) } : {};
-    const query = Event.find(filter).sort({ createdAt: -1 }) // newest logged first;
+    const query = Event.find(filter).sort({ createdAt: -1 }); // newest logged first
     if (req.query.withPoster !== '1') query.select('-poster');
     const limit = parseInt(req.query.limit, 10);
     if (limit > 0) query.limit(Math.min(limit, 50));
