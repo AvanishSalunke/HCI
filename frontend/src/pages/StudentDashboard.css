@@ -76,3 +76,11 @@
   box-shadow: 0 4px 14px rgba(11,37,69,0.08);
   border-color: var(--accent-color);
 }
+
+
+/* -- Polish -- */
+.card-header h2 { font-family: var(--font-display); font-weight: 800; }
+.expense-item { animation: rise 0.45s ease both; }
+.expense-item:nth-child(2) { animation-delay: 0.05s; }
+.expense-item:nth-child(3) { animation-delay: 0.1s; }
+.expense-item:nth-child(n+4) { animation-delay: 0.15s; }
