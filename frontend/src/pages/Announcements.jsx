@@ -35,7 +35,7 @@ function Announcements() {
                   day: 'numeric', month: 'short', year: 'numeric'
                 })}
                 {ann.postedBy && (
-                  <span className="ann-posted-by"> · {ann.postedBy.committee?.toUpperCase()}</span>
+                  <span className="ann-posted-by"> · {ann.postedBy.role === 'admin' ? 'ADMIN' : ann.postedBy.committee?.toUpperCase()}</span>
                 )}
               </span>
               <p>{ann.body}</p>
