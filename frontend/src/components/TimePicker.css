@@ -126,3 +126,9 @@
 .tp-cancel:hover { color: var(--primary-color); }
 .tp-ok { background: var(--gradient-accent); border: none; color: var(--white); }
 .tp-ok:hover { box-shadow: var(--glow-accent); }
+
+
+/* -- Mobile -- */
+@media (max-width: 520px) {
+  .tp-popover { width: min(270px, calc(100vw - 2.5rem)); }
+}
