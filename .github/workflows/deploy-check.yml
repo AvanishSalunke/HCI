@@ -53,7 +53,7 @@ jobs:
           HOOK_WEB: ${{ secrets.RENDER_DEPLOY_HOOK_WEB }}
         run: |
           if [ -z "$HOOK_API" ] || [ -z "$HOOK_WEB" ]; then
-            echo "The deploy hook secrets are not set. Render must deploy this commit by itself."
+            echo "::warning::The deploy hook secrets are not set, so nothing was sent to Render. Add RENDER_DEPLOY_HOOK_API and RENDER_DEPLOY_HOOK_WEB in the repository secrets, or Render must deploy this commit by itself."
             exit 0
           fi
           curl -fsS -X POST "${HOOK_API}&ref=${GITHUB_SHA}" > /dev/null && echo "Backend deploy requested"
