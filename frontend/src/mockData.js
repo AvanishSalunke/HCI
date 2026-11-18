@@ -23,7 +23,7 @@ export const mockFaculty = [
     id: 1,
     name: 'Prof. S.S Lachure',
     department: 'Computer Engineering',
-    committees: ['Digital VJTI'],
+    committees: ['COC'],
     photo: '/assets/faculty_pics/lachure_sir.png'
   },
   {
@@ -67,5 +67,61 @@ export const mockFaculty = [
     department: 'Electronics Engineering',
     committees: ['Aero'],
     photo: '/assets/faculty_pics/sachin_naik.png'
+  },
+  {
+    id: 5,
+    name: 'Dr. Madhav M. Chandane',
+    department: 'Computer Engineering & IT',
+    committees: ['Digital VJTI'],
+    photo: '/assets/faculty_pics/chandane_sir.png'
+  },
+  {
+    id: 6,
+    name: 'Prof. Rajesh Kulkarni',
+    department: 'Electrical Engineering',
+    committees: ['Technovanza'],
+    photo: '/assets/faculty_pics/placeholder_technovanza.svg'
+  },
+  {
+    id: 7,
+    name: 'Prof. Anita Deshmukh',
+    department: 'Production Engineering',
+    committees: ['Enthusia'],
+    photo: '/assets/faculty_pics/placeholder_enthusia.svg'
+  },
+  {
+    id: 8,
+    name: 'Prof. Sunil Patil',
+    department: 'Humanities',
+    committees: ['Rangawardhan'],
+    photo: '/assets/faculty_pics/placeholder_rangawardhan.svg'
+  },
+  {
+    id: 9,
+    name: 'Prof. Meera Joshi',
+    department: 'Textile Engineering',
+    committees: ['Vishwa VJTI'],
+    photo: '/assets/faculty_pics/placeholder_vishwa.svg'
+  },
+  {
+    id: 10,
+    name: 'Prof. Amit Bhosale',
+    department: 'Electronics Engineering',
+    committees: ['Synergists'],
+    photo: '/assets/faculty_pics/placeholder_synergists.svg'
+  },
+  {
+    id: 11,
+    name: 'Prof. Kavita Rane',
+    department: 'Management Studies',
+    committees: ['E-Cell'],
+    photo: '/assets/faculty_pics/placeholder_ecell.svg'
+  },
+  {
+    id: 12,
+    name: 'Prof. Vivek Gaikwad',
+    department: 'Civil Engineering',
+    committees: ['Alumni Association'],
+    photo: '/assets/faculty_pics/placeholder_alumni.svg'
   },
 ];
