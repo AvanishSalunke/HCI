@@ -188,6 +188,7 @@
 }
 .stat-card .stat-icon.green { background: #eafaf1; color: #1e8449; }
 .stat-card .stat-icon.red   { background: #fdedec; color: #b03a2e; }
+.stat-card .stat-icon.blue  { background: #e3eefb; color: #1a6eb5; }
 .stat-card .stat-info h3 {
   font-size: 0.85rem;
   color: var(--text-light);
