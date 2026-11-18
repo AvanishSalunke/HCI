@@ -112,3 +112,11 @@
   font-size: 0.8rem;
   color: #999;
 }
+
+
+/* -- Polish -- */
+.modal-content { animation: modalPop 0.35s cubic-bezier(0.2, 1.1, 0.4, 1) both; }
+@keyframes modalPop { from { opacity: 0; transform: scale(0.92) translateY(20px); } to { opacity: 1; transform: none; } }
+.modal-content h2 { font-family: var(--font-display); }
+.modal-close-btn { transition: color 0.2s ease, transform 0.3s ease; }
+.modal-close-btn:hover { transform: rotate(90deg); }
