@@ -6,8 +6,8 @@ const {
   getCommitteeSponsorships,
   updateSponsorshipStatus,
 } = require('../controllers/sponsorshipController');
-const { protect, isTeacher } = require('../middleware/authMiddleware');
-router.post('/', protect, createSponsorship);
+const { protect, isTeacher, isStudent } = require('../middleware/authMiddleware');
+router.post('/', protect, isStudent, createSponsorship);
 router.get('/my-sponsorships', protect, getStudentSponsorships);
 router.get('/committee', protect, isTeacher, getCommitteeSponsorships);
 router.put('/:id/status', protect, isTeacher, updateSponsorshipStatus);
