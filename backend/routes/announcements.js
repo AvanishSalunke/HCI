@@ -5,10 +5,10 @@ const {
   getAnnouncements,
   deleteAnnouncement,
 } = require('../controllers/announcementController');
-const { protect, isTeacher } = require('../middleware/authMiddleware');
+const { protect, isTeacherOrAdmin } = require('../middleware/authMiddleware');
 
 router.get('/', getAnnouncements);
-router.post('/', protect, isTeacher, createAnnouncement);
-router.delete('/:id', protect, isTeacher, deleteAnnouncement);
+router.post('/', protect, isTeacherOrAdmin, createAnnouncement);
+router.delete('/:id', protect, isTeacherOrAdmin, deleteAnnouncement);
 
 module.exports = router;

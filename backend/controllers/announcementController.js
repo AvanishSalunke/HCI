@@ -11,10 +11,11 @@ const createAnnouncement = async (req, res) => {
       title,
       body,
       postedBy: req.user._id,
-      committee: req.user.committee,
+      // the admin does not belong to a committee; their posts are shown as "Admin"
+      committee: req.user.role === 'admin' ? 'admin' : req.user.committee,
     });
     const created = await announcement.save();
-    await created.populate('postedBy', 'username committee');
+    await created.populate('postedBy', 'username committee role');
     res.status(201).json(created);
   } catch (err) {
     res.status(500).json({ message: err.message || 'Server Error' });
@@ -25,7 +26,7 @@ const getAnnouncements = async (req, res) => {
   try {
     const announcements = await Announcement.find()
       .sort({ createdAt: -1 })
-      .populate('postedBy', 'username committee');
+      .populate('postedBy', 'username committee role');
     res.json(announcements);
   } catch (err) {
     res.status(500).json({ message: 'Server Error' });
@@ -36,7 +37,8 @@ const deleteAnnouncement = async (req, res) => {
   try {
     const announcement = await Announcement.findById(req.params.id);
     if (!announcement) return res.status(404).json({ message: 'Not found' });
-    if (announcement.committee !== req.user.committee) {
+    // the admin can remove any announcement; faculty only their own committee's
+    if (req.user.role !== 'admin' && announcement.committee !== req.user.committee) {
       return res.status(401).json({ message: 'Not authorized' });
     }
     await announcement.deleteOne();
