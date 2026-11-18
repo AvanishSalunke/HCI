@@ -252,11 +252,11 @@ function TeacherDashboard() {
                   {!loading && pendingTransactions.length === 0 && <tr><td colSpan="5">No pending expenses.</td></tr>}
                   {!loading && pendingTransactions.map(t => (
                     <tr key={t._id}>
-                      <td>{t.user.username}</td>
-                      <td>{t.title}</td>
-                      <td>₹{t.amount.toLocaleString('en-IN')}</td>
-                      <td><a href={t.receiptLink} target="_blank" rel="noopener noreferrer">View Proof</a></td>
-                      <td className="actions-cell">
+                      <td data-label="Student">{t.user.username}</td>
+                      <td data-label="Title">{t.title}</td>
+                      <td data-label="Amount">₹{t.amount.toLocaleString('en-IN')}</td>
+                      <td data-label="Receipt"><a href={t.receiptLink} target="_blank" rel="noopener noreferrer">View Proof</a></td>
+                      <td className="actions-cell" data-label="Actions">
                         <button className="btn-action btn-approve" onClick={() => handleApprove(t._id)}>Approve</button>
                         <button className="btn-action btn-reject" onClick={() => openRejectModal(t._id)}>Reject</button>
                       </td>
@@ -316,15 +316,15 @@ function TeacherDashboard() {
                   {!loading && allOtherTransactions.length === 0 && <tr><td colSpan="5">No approved or rejected expenses.</td></tr>}
                   {!loading && allOtherTransactions.map(t => (
                     <tr key={t._id}>
-                      <td>{t.user.username}</td>
-                      <td>{t.title}</td>
-                      <td>₹{t.amount.toLocaleString('en-IN')}</td>
-                      <td>
+                      <td data-label="Student">{t.user.username}</td>
+                      <td data-label="Title">{t.title}</td>
+                      <td data-label="Amount">₹{t.amount.toLocaleString('en-IN')}</td>
+                      <td data-label="Status">
                         <span className={`status-badge ${t.status === 'approved' ? 'status-approved' : 'status-rejected'}`}>
                           {t.status}
                         </span>
                       </td>
-                      <td>
+                      <td data-label="Details">
                         <button className="btn-action btn-view" onClick={() => setSelectedTransaction(t)}>View</button>
                       </td>
                     </tr>
