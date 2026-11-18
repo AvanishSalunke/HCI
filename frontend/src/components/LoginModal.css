@@ -120,3 +120,11 @@
 .modal-content h2 { font-family: var(--font-display); }
 .modal-close-btn { transition: color 0.2s ease, transform 0.3s ease; }
 .modal-close-btn:hover { transform: rotate(90deg); }
+
+
+/* -- Mobile -- */
+@media (max-width: 520px) {
+  .modal-content { margin: 1rem; width: calc(100% - 2rem); padding: 2rem 1.25rem 1.5rem; max-height: 92vh; overflow-y: auto; }
+  .modal-content h2 { font-size: 1.4rem; }
+  .modal-content p { margin-bottom: 1.25rem; }
+}
