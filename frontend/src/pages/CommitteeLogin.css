@@ -126,3 +126,61 @@
   text-align: center;
   font-weight: 500;
 }
+
+/* ═══════════ DARK NEON THEME ═══════════ */
+.login-page-fullscreen-wrapper { background-color: transparent; min-height: calc(100vh - 72px); height: auto; }
+.parallax-grid-bg {
+  background-image: radial-gradient(rgba(56,163,245,0.45) 1px, transparent 1px);
+  animation: gridDrift 20s linear infinite;
+}
+@keyframes gridDrift { to { background-position: 40px 40px; } }
+
+.login-card-layout { animation: modalPop 0.8s cubic-bezier(0.2, 1.1, 0.3, 1) both; box-shadow: 0 0 80px rgba(56,163,245,0.25), 0 30px 80px rgba(0,0,0,0.7); }
+@keyframes modalPop { from { opacity: 0; transform: scale(0.85) translateY(40px); } to { opacity: 1; transform: none; } }
+
+.login-identity-panel {
+  background: radial-gradient(circle at 30% 0%, #1a6eb5 0%, #0b2545 65%, #060f22 100%);
+  position: relative;
+  overflow: hidden;
+}
+.login-identity-panel::before {
+  content: '';
+  position: absolute;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(56,163,245,0.45), transparent 70%);
+  top: -80px; right: -80px;
+  animation: floaty 6s ease-in-out infinite;
+}
+.committee-login-logo {
+  position: relative;
+  border-color: var(--accent-bright);
+  box-shadow: 0 0 40px rgba(56,163,245,0.7);
+  animation: floaty 5s ease-in-out infinite;
+}
+.login-identity-panel h2 { position: relative; font-family: var(--font-display); font-weight: 700; text-shadow: 0 0 24px rgba(56,163,245,0.8); }
+.login-identity-panel p { position: relative; }
+
+.login-form-panel { background: rgba(7, 16, 36, 0.92); }
+.role-selector { background: rgba(4,10,24,0.7); }
+.role-selector label.active {
+  background-color: transparent;
+  background-image: var(--gradient-accent);
+  box-shadow: 0 0 22px rgba(56,163,245,0.55);
+}
+.role-selector label:hover:not(.active) { color: var(--white); background: rgba(56,163,245,0.1); }
+.form-group input { background: rgba(4, 10, 24, 0.85); color: var(--text-color); }
+.form-group input:focus { border-color: var(--accent-bright); box-shadow: var(--glow-accent); }
+.login-footer { color: var(--text-light); }
+.login-error-message {
+  color: #ff8a7d;
+  background: rgba(231,76,60,0.12);
+  border: 1px solid rgba(231,76,60,0.45);
+  animation: shake 0.45s ease;
+}
+@keyframes shake { 20%, 60% { transform: translateX(-8px); } 40%, 80% { transform: translateX(8px); } }
+
+@media (max-width: 760px) {
+  .login-card-layout { flex-direction: column; }
+  .login-identity-panel { border-radius: var(--border-radius) var(--border-radius) 0 0; }
+}
