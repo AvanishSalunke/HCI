@@ -1,0 +1,30 @@
+/* --- Single login panel (navbar Login) --- */
+
+.login-card-single {
+  flex-direction: column;
+  max-width: 440px;
+}
+.login-single-head {
+  background: var(--primary-color);
+  color: var(--white);
+  text-align: center;
+  padding: 2rem 2rem 1.75rem;
+}
+.login-single-logo {
+  width: 84px;
+  height: 84px;
+  object-fit: contain;
+  background: var(--white);
+  border-radius: 50%;
+  padding: 6px;
+  margin-bottom: 1rem;
+  border: 4px solid var(--accent-color);
+}
+.login-single-head h2 { font-size: 1.6rem; font-weight: 700; }
+.login-single-head p { font-size: 0.95rem; color: rgba(255, 255, 255, 0.8); margin-top: 0.3rem; }
+.login-card-single .login-form-panel { flex-basis: auto; }
+
+@media (max-width: 760px) {
+  .login-single-head { padding: 1.5rem 1.25rem; }
+  .login-single-logo { width: 68px; height: 68px; }
+}
