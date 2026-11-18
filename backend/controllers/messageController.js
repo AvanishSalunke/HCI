@@ -1,5 +1,6 @@
 const Message = require('../models/Message');
 const committees = require('../committees');
+const { notify } = require('../utils/notify');
 
 const MAX_MESSAGE_LENGTH = 1000;
 
@@ -50,6 +51,13 @@ const sendMessage = async (req, res) => {
       req.io.to(committee).emit('receive_message', newMessage);
     }
 
+    const senderName = req.user.role === 'admin' ? 'Admin' : req.user.username;
+    notify({ committee, role: { $in: ['student', 'teacher'] }, user: { $ne: sender } }, {
+      title: `${senderName} in committee chat`,
+      body: text.length > 120 ? `${text.slice(0, 117)}...` : text,
+      url: req.user.role === 'teacher' ? '/teacher-dashboard' : '/student-dashboard',
+      tag: `chat-${committee}`,
+    });
     res.status(201).json(newMessage);
   } catch (error) {
     console.error(error);
