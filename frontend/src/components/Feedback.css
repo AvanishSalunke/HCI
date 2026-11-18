@@ -186,3 +186,20 @@
 .fbx-feedback-item, .fbx-event-item { transition: transform 0.2s ease, box-shadow 0.2s ease; animation: rise 0.45s ease both; }
 .fbx-feedback-item:hover, .fbx-event-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-soft); }
 .fbx-big { font-family: var(--font-display); }
+
+
+/* -- Mobile -- */
+@media (max-width: 768px) {
+  .fbx-card { padding: 1.25rem 1rem; }
+  .fbx-event { padding: 1rem; gap: 1rem; }
+  .fbx-stars .star { font-size: 2.3rem; padding: 0.1rem 0.15rem; }
+  .fbx-list-top { flex-direction: column; align-items: stretch; }
+  .fbx-summary { gap: 1.5rem; }
+  .fbx-filter { width: 100%; }
+  .fbx-feedback-head { flex-wrap: wrap; gap: 0.25rem; }
+  .fbx-event-item { flex-wrap: wrap; }
+  .fbx-event-item-info { min-width: 0; flex-basis: 50%; overflow-wrap: anywhere; }
+  .fbx-delete { min-height: 40px; }
+  .fbx-attach-item img { width: 96px; height: 72px; }
+  .fbx-thanks { margin: 1.5rem auto; padding: 2rem 1.25rem; }
+}
