@@ -361,7 +361,7 @@
 
   .queue-card-main { flex-direction: column; align-items: stretch; padding: 1.1rem; }
   .queue-card-actions { flex-wrap: wrap; }
-  .queue-card-actions .btn-action { flex: 1; justify-content: center; min-height: 40px; }
+  .queue-card-actions .btn-action { flex: 1; justify-content: center; min-height: 44px; }
   .queue-card-details { padding: 1.1rem; }
   .queue-card-info p { overflow-wrap: anywhere; }
 
