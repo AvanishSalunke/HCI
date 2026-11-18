@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { pushSupported, enableNotifications, syncSubscription } from '../push';
 import './Navbar.css';
 
 const DASHBOARD_FOR_ROLE = {
@@ -12,6 +13,26 @@ function Navbar() {
   const navigate = useNavigate();
   useLocation(); // re-check the saved login whenever the page changes
 
+  const [installPrompt, setInstallPrompt] = useState(null);
+  const [permission, setPermission] = useState(
+    pushSupported() ? Notification.permission : 'unavailable'
+  );
+
+  // Chrome on Android offers the "install" prompt through this event
+  useEffect(() => {
+    const onPrompt = (e) => { e.preventDefault(); setInstallPrompt(e); };
+    const onInstalled = () => setInstallPrompt(null);
+    window.addEventListener('beforeinstallprompt', onPrompt);
+    window.addEventListener('appinstalled', onInstalled);
+    return () => {
+      window.removeEventListener('beforeinstallprompt', onPrompt);
+      window.removeEventListener('appinstalled', onInstalled);
+    };
+  }, []);
+
+  // keep the server's record of this device up to date (e.g. after the site is reopened)
+  useEffect(() => { syncSubscription(); }, []);
+
   let user = null;
   try {
     user = JSON.parse(localStorage.getItem('user'));
@@ -23,7 +44,21 @@ function Navbar() {
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    syncSubscription(); // this device is no longer tied to the account
     navigate('/');
+  };
+
+  const handleInstall = async () => {
+    if (!installPrompt) return;
+    installPrompt.prompt();
+    await installPrompt.userChoice;
+    setInstallPrompt(null);
+  };
+
+  const handleEnableNotifications = async () => {
+    const result = await enableNotifications();
+    setPermission(result === 'unavailable' ? Notification.permission : result);
+    if (result === 'unavailable') alert('Notifications could not be turned on right now.');
   };
 
   return (
@@ -74,6 +109,16 @@ function Navbar() {
             >
               Login
             </NavLink>
+          )}
+          {permission === 'default' && (
+            <button type="button" className="nav-link nav-logout" onClick={handleEnableNotifications}>
+              Get notifications
+            </button>
+          )}
+          {installPrompt && (
+            <button type="button" className="nav-link nav-logout" onClick={handleInstall}>
+              Install app
+            </button>
           )}
         </div>
       </div>
