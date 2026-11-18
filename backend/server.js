@@ -4,6 +4,8 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const http = require('http');
 const { Server } = require('socket.io');
+const jwt = require('jsonwebtoken');
+const User = require('./models/User');
 
 dotenv.config();
 
@@ -45,12 +47,26 @@ app.use((req, res, next) => {
   next();
 });
 
+// Chat sockets must carry a valid login token.
+io.use(async (socket, next) => {
+  try {
+    const decoded = jwt.verify(socket.handshake.auth?.token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.userId).select('committee');
+    if (!user) return next(new Error('Not authorized'));
+    socket.data.committee = user.committee;
+    next();
+  } catch (err) {
+    next(new Error('Not authorized'));
+  }
+});
+
 io.on('connection', (socket) => {
   console.log('New client connected:', socket.id);
 
-  socket.on('join_committee', (committee) => {
-    socket.join(committee);
-    console.log(`Socket ${socket.id} joined committee room: ${committee}`);
+  // A user can only ever join their own committee's room, whatever the client asks for.
+  socket.on('join_committee', () => {
+    socket.join(socket.data.committee);
+    console.log(`Socket ${socket.id} joined committee room: ${socket.data.committee}`);
   });
 
   socket.on('disconnect', () => {

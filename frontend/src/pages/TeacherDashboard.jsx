@@ -85,7 +85,7 @@ function TeacherDashboard() {
       };
       fetchMessages();
 
-      socketRef.current = io(API_BASE);
+      socketRef.current = io(API_BASE, { auth: { token: getToken() } });
 
       socketRef.current.on('connect', () => {
         socketRef.current.emit('join_committee', currentUser.committee);
