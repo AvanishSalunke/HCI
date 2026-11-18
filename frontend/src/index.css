@@ -54,3 +54,11 @@ html { scrollbar-width: thin; scrollbar-color: #9db6d6 var(--bg-light); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+
+/* -- Mobile: no sideways scroll, no iOS zoom on inputs -- */
+@media (max-width: 768px) {
+  body { overflow-x: hidden; }
+  img { max-width: 100%; }
+  input, select, textarea { font-size: 16px; }
+}
