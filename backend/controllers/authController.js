@@ -24,7 +24,7 @@ exports.loginUser = async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
-    if (user.role !== role) {
+    if (role && user.role !== role) {
       return res.status(400).json({ message: `You are not registered as a ${role}` });
     }
     // the login page of one committee must not let in another committee's account
