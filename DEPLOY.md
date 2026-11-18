@@ -7,7 +7,7 @@ The project runs as two Render services, both created from [`render.yaml`](rende
 | `committee-coordinator-api` | Web service (Node) | `backend` | The API, chat sockets and notification sender |
 | `committee-coordinator-vjti` | Static site | `frontend` | The website and installable app |
 
-The database is MongoDB Atlas. Both services redeploy by themselves whenever you push to `main`.
+The database is MongoDB Atlas. Both services redeploy whenever you push to `main` (see [Updating the live site](#updating-the-live-site) for how that is wired up).
 
 ## One-time setup
 
@@ -79,11 +79,41 @@ This creates the committee accounts and the admin (see [Seeded accounts](README.
 
 ## Updating the live site
 
-Push to `main`. Render rebuilds both services. Each push also runs the GitHub Actions workflow in `.github/workflows/deploy-check.yml`, which builds and lints the code, then waits until the live API (`/api/version`) and website (`/version.json`) report the pushed commit. The commit then gets a green tick on GitHub, or a red cross if something failed.
+Push to `main`. The GitHub Actions workflow in `.github/workflows/deploy-check.yml` then does three things:
 
-The checks need the two live addresses. They are written at the top of the workflow file. If the services are ever recreated with new addresses, update them there.
+1. **Build and checks** builds and lints the website and syntax-checks the backend.
+2. **Start Render deploy** asks Render to deploy that exact commit, using each service's deploy hook.
+3. **Wait for live deploy** waits until the live API (`/api/version`) and website (`/version.json`) both report the pushed commit. The commit then gets a green tick on GitHub, or a red cross if something failed.
+
+Pull requests only run the first step.
+
+### One-time: connect GitHub to Render with deploy hooks
+
+Render's own "deploy on every push" needs the Render GitHub app to be installed on your GitHub account. If it is not (or you would rather not), the workflow can start the deploys itself:
+
+1. In Render, open the **API** service, then **Settings**, scroll to **Deploy Hook** and copy the link. It looks like `https://api.render.com/deploy/srv-...?key=...`. Treat it like a password.
+2. In GitHub, open the repository, then **Settings > Secrets and variables > Actions > New repository secret**. Name it exactly `RENDER_DEPLOY_HOOK_API` and paste the link as the value.
+3. Repeat for the **website** service, with the name `RENDER_DEPLOY_HOOK_WEB`.
+
+The value is the deploy hook link, not the address of the website.
+
+If the secrets are missing, the **Start Render deploy** step prints a yellow warning and sends nothing.
+
+The workflow also needs the two live addresses. They are written at the top of the workflow file. If the services are ever recreated with new addresses, update them there.
 
 Settings in the Render dashboard are not touched by a push. Change them under the service's **Environment** tab.
+
+## Troubleshooting
+
+| What you see | What to do |
+| --- | --- |
+| The commit has no green tick after 10 minutes | Open the run in the GitHub **Actions** tab and read **Start Render deploy**. "Backend deploy requested" and "Website deploy requested" mean Render was told. A warning about secrets means they are missing or misnamed |
+| Render shows no new deploy | Use **Manual Deploy > Deploy latest commit** on both services, then re-run the workflow |
+| Browser console says "blocked by CORS policy" | `FRONTEND_URL` on the API does not match the website address exactly |
+| The site loads but every action fails | `VITE_API_URL` on the website points to the wrong address. Fix it and redeploy the website |
+| Login is slow the first time | The free API service was asleep. Wait up to a minute |
+| "Too many login attempts" | Login is limited to 20 tries per 15 minutes from one address. Wait a few minutes |
+| The API stops at start-up | `MONGO_URI` or `JWT_SECRET` is missing. The logs say which |
 
 ## Notes
 
