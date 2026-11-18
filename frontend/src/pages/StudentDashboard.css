@@ -84,3 +84,16 @@
 .expense-item:nth-child(2) { animation-delay: 0.05s; }
 .expense-item:nth-child(3) { animation-delay: 0.1s; }
 .expense-item:nth-child(n+4) { animation-delay: 0.15s; }
+
+
+/* -- Mobile -- */
+@media (max-width: 768px) {
+  .card-header { padding: 1.1rem; }
+  .card-header h2 { font-size: 1.2rem; }
+  .card-body { padding: 1rem; }
+  .expense-item { gap: 0.75rem; padding: 0.9rem; }
+  .expense-item-info { min-width: 0; }
+  .expense-item-info h4 { overflow-wrap: anywhere; }
+  .messages-container { height: 440px !important; }
+  .chat-window > div[style] { max-width: 85% !important; }
+}
