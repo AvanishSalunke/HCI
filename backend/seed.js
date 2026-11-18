@@ -28,7 +28,7 @@ const seedUsers = async () => {
     await User.deleteMany({});
     console.log('Cleared existing users.');
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash('password123', salt);
+    const hashedPassword = await bcrypt.hash('123', salt);
     const users = [];
     for (const committee of committees) {
       users.push({
@@ -47,7 +47,7 @@ const seedUsers = async () => {
     await User.insertMany(users);
     console.log(`Seeded ${users.length} users successfully!\n`);
     console.log('=== DUMMY LOGIN CREDENTIALS ===');
-    console.log('Password for ALL accounts: password123\n');
+    console.log('Password for ALL accounts: 123\n');
     console.log('Committee'.padEnd(20), 'Student Username'.padEnd(30), 'Teacher Username');
     console.log('-'.repeat(80));
     for (const committee of committees) {
