@@ -311,3 +311,11 @@
   z-index: 1000;
   backdrop-filter: blur(4px);
 }
+
+
+/* -- Polish -- */
+.queue-card { animation: rise 0.45s ease both; transition: box-shadow 0.25s ease, transform 0.25s ease; }
+.queue-card:hover { transform: translateY(-2px); }
+.queue-card-info h3 { font-family: var(--font-display); }
+.btn-approve:hover, .btn-reject:hover { transform: translateY(-1px); }
+.ann-posted-card { animation: rise 0.45s ease both; }
