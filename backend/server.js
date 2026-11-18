@@ -22,6 +22,7 @@ const messageRoutes = require('./routes/messages');
 const eventRoutes = require('./routes/events');
 const feedbackRoutes = require('./routes/feedback');
 const adminRoutes = require('./routes/admin');
+const pushRoutes = require('./routes/push');
 
 const app = express();
 const server = http.createServer(app);
@@ -110,6 +111,7 @@ app.use('/api/messages', messageRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/feedback', feedbackRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/push', pushRoutes);
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to the VJTI Fund Tracker API!' });
 });
