@@ -556,3 +556,40 @@
 .committee-card-flip:hover .flip-front { box-shadow: var(--shadow-hover); }
 .card-aesthetic-name h3 { font-family: var(--font-display); }
 .flip-back h3 { font-family: var(--font-display); }
+
+
+/* -- Mobile -- */
+@media (max-width: 768px) {
+  .aesthetic-hero { padding: 1rem; gap: 1rem; min-height: 0; }
+  .hero-text-panel, .home-feedback { padding: 1.5rem 1.25rem; flex-basis: auto; }
+  .hero-logo { width: 60px; height: 60px; }
+  .hero-text-panel h1, .home-feedback h2 { font-size: 1.85rem; }
+  .hero-text-panel p { font-size: 0.98rem; margin: 1rem 0 1.5rem; }
+  .hero-actions { flex-direction: column; }
+  .hero-actions .btn { text-align: center; }
+  .home-feedback { gap: 1.1rem; }
+  .home-feedback-head p { font-size: 0.98rem; margin-top: 0.75rem; }
+  .home-feedback-all { text-align: center; width: 100%; }
+  .home-feedback-list { max-height: 360px; padding-right: 0.3rem; }
+  .home-event-row { padding: 0.85rem 1rem; }
+  .home-event-main h3 { white-space: normal; font-size: 1rem; }
+  .home-event-go { width: 100%; text-align: center; padding: 0.65rem; }
+
+  .announcements-container { margin: 1.5rem 1rem; padding: 1.25rem; }
+  .announcements-header h2, .committee-grid-header h2 { font-size: 1.5rem; }
+  .announcement-card { gap: 0.9rem; padding: 1.1rem 0.25rem; }
+  .announcement-icon { padding: 0.55rem; }
+  .announcement-icon svg { width: 18px; height: 18px; }
+
+  .committee-grid-section { padding: 1.5rem 1rem 3rem; }
+  .committee-grid { grid-template-columns: repeat(2, 1fr); gap: 0.9rem; }
+  .committee-card-flip { height: 210px; }
+  .card-aesthetic-logo { padding: 0.75rem; }
+  .card-aesthetic-logo img { max-height: 110px; }
+  .card-aesthetic-name { padding: 0.7rem 0.5rem; }
+  .card-aesthetic-name h3 { font-size: 0.85rem; white-space: normal; }
+}
+@media (max-width: 360px) {
+  .committee-grid { grid-template-columns: 1fr; }
+  .committee-card-flip { height: 230px; }
+}
