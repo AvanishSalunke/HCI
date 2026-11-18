@@ -1,5 +1,7 @@
 const Event = require('../models/Event');
 const Feedback = require('../models/Feedback');
+const committees = require('../committees');
+const { notify } = require('../utils/notify');
 
 const MAX_POSTER_CHARS = 2 * 1024 * 1024; // ~1.5 MB image once base64-encoded
 
@@ -30,6 +32,13 @@ const createEvent = async (req, res) => {
       description,
       poster: poster || '',
       createdBy: req.user._id,
+    });
+    const committeeName = committees.find(c => c.id === event.committee)?.name || event.committee;
+    notify({}, {
+      title: `New event: ${event.name}`,
+      body: `${committeeName} added an event. Tap to give your feedback.`,
+      url: `/feedback?committee=${event.committee}&event=${event._id}`,
+      tag: `event-${event._id}`,
     });
     res.status(201).json(event);
   } catch (err) {
