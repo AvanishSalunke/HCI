@@ -1,0 +1,59 @@
+# Runs on every push to main.
+#   1. "Build and checks": the website builds, the code has no lint errors, the backend files are valid.
+#   2. "Wait for live deploy": waits until Render is serving this exact commit, on both the
+#      website and the backend. When it is, the commit gets a green tick on GitHub.
+name: Deploy check
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  BACKEND_URL: https://committee-coordinator-api-kfo8.onrender.com
+  FRONTEND_URL: https://committee-coordinator-vjti.onrender.com
+
+jobs:
+  build:
+    name: Build and checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Website - install, lint, build
+        working-directory: frontend
+        run: |
+          npm ci
+          npm run lint
+          npm run build
+      - name: Backend - install and check every file
+        working-directory: backend
+        run: |
+          npm ci
+          for f in server.js seed.js createAdmin.js controllers/*.js routes/*.js middleware/*.js models/*.js utils/*.js; do
+            node --check "$f"
+          done
+
+  live:
+    name: Wait for live deploy
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Wait until Render serves this commit
+        run: |
+          echo "Waiting for commit $GITHUB_SHA to go live..."
+          for i in $(seq 1 60); do
+            back=$(curl -s -m 60 "$BACKEND_URL/api/version" | grep -o '"commit":"[^"]*"' | cut -d'"' -f4 || true)
+            front=$(curl -s -m 30 "$FRONTEND_URL/version.json?t=$i" | grep -o '"commit":"[^"]*"' | cut -d'"' -f4 || true)
+            echo "try $i: backend=${back:-none} website=${front:-none}"
+            if [ "$back" = "$GITHUB_SHA" ] && [ "$front" = "$GITHUB_SHA" ]; then
+              echo "Both are live on $GITHUB_SHA"
+              exit 0
+            fi
+            sleep 20
+          done
+          echo "Not live after 20 minutes. Check the Render dashboard (Events and Logs)."
+          exit 1
