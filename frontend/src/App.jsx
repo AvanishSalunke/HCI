@@ -4,6 +4,7 @@ import AOS from 'aos';
 import 'aos/dist/aos.css'; 
 
 import Navbar from './components/Navbar';
+import ProtectedRoute from './components/ProtectedRoute';
 import Welcome from './pages/Welcome';
 import CommitteeLogin from './pages/CommitteeLogin';
 import Announcements from './pages/Announcements';
@@ -34,8 +35,8 @@ function App() {
           <Route path="/feedback" element={<Feedback />} />
           <Route path="/announcements" element={<Announcements />} />
           <Route path="/faculty" element={<Faculty />} />
-          <Route path="/student-dashboard" element={<StudentDashboard />} />
-          <Route path="/teacher-dashboard" element={<TeacherDashboard />} />
+          <Route path="/student-dashboard" element={<ProtectedRoute role="student"><StudentDashboard /></ProtectedRoute>} />
+          <Route path="/teacher-dashboard" element={<ProtectedRoute role="teacher"><TeacherDashboard /></ProtectedRoute>} />
         </Routes>
       </main>
     </div>
