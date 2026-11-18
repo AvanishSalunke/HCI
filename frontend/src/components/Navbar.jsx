@@ -2,6 +2,12 @@ import React from 'react';
 import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import './Navbar.css';
 
+const DASHBOARD_FOR_ROLE = {
+  student: '/student-dashboard',
+  teacher: '/teacher-dashboard',
+  admin: '/admin-dashboard',
+};
+
 function Navbar() {
   const navigate = useNavigate();
   useLocation(); // re-check the saved login whenever the page changes
@@ -49,10 +55,10 @@ function Navbar() {
           >
             Faculty Advisors
           </NavLink>
-          {loggedIn && (
+          {loggedIn ? (
             <>
               <NavLink
-                to={user.role === 'teacher' ? '/teacher-dashboard' : '/student-dashboard'}
+                to={DASHBOARD_FOR_ROLE[user.role] || '/'}
                 className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
               >
                 My Dashboard
@@ -61,6 +67,13 @@ function Navbar() {
                 Log out
               </button>
             </>
+          ) : (
+            <NavLink
+              to="/login"
+              className={({ isActive }) => isActive ? 'nav-link nav-login active' : 'nav-link nav-login'}
+            >
+              Login
+            </NavLink>
           )}
         </div>
       </div>

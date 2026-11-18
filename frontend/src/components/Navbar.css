@@ -58,6 +58,8 @@
   margin-left: 0.35rem;
 }
 
+.nav-login { background: rgba(56,163,245,0.22); color: var(--white); }
+.nav-login:hover { background: rgba(56,163,245,0.4); }
 .nav-logout { background: none; border: none; font-family: inherit; cursor: pointer; }
 .navbar-links {
   display: flex;
