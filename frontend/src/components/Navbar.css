@@ -58,6 +58,7 @@
   margin-left: 0.35rem;
 }
 
+.nav-logout { background: none; border: none; font-family: inherit; cursor: pointer; }
 .navbar-links {
   display: flex;
   gap: 0.5rem;
