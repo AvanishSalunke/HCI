@@ -21,6 +21,7 @@ const announcementRoutes = require('./routes/announcements');
 const messageRoutes = require('./routes/messages');
 const eventRoutes = require('./routes/events');
 const feedbackRoutes = require('./routes/feedback');
+const adminRoutes = require('./routes/admin');
 
 const app = express();
 const server = http.createServer(app);
@@ -51,9 +52,10 @@ app.use((req, res, next) => {
 io.use(async (socket, next) => {
   try {
     const decoded = jwt.verify(socket.handshake.auth?.token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.userId).select('committee');
+    const user = await User.findById(decoded.userId).select('committee role');
     if (!user) return next(new Error('Not authorized'));
     socket.data.committee = user.committee;
+    socket.data.role = user.role;
     next();
   } catch (err) {
     next(new Error('Not authorized'));
@@ -63,10 +65,14 @@ io.use(async (socket, next) => {
 io.on('connection', (socket) => {
   console.log('New client connected:', socket.id);
 
-  // A user can only ever join their own committee's room, whatever the client asks for.
-  socket.on('join_committee', () => {
-    socket.join(socket.data.committee);
-    console.log(`Socket ${socket.id} joined committee room: ${socket.data.committee}`);
+  // Students and faculty can only ever join their own committee's room.
+  // The admin may join the room of any committee they are looking at.
+  socket.on('join_committee', (requested) => {
+    const room = socket.data.role === 'admin' && typeof requested === 'string'
+      ? requested
+      : socket.data.committee;
+    socket.join(room);
+    console.log(`Socket ${socket.id} joined committee room: ${room}`);
   });
 
   socket.on('disconnect', () => {
@@ -103,6 +109,7 @@ app.use('/api/announcements', announcementRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/feedback', feedbackRoutes);
+app.use('/api/admin', adminRoutes);
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to the VJTI Fund Tracker API!' });
 });
