@@ -8,35 +8,15 @@ const generateToken = (id, role) => {
     { expiresIn: '3d' }
   );
 };
-exports.registerUser = async (req, res) => {
-  try {
-    const { username, password, role, committee } = req.body;
-    let user = await User.findOne({ username });
-    if (user) {
-      return res.status(400).json({ message: 'Username already exists' });
-    }
-    user = new User({
-      username,
-      password,
-      role,
-      committee,
-    });
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(password, salt);
-    await user.save();
-    res.status(201).json({
-      message: 'User registered successfully',
-      userId: user._id,
-    });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
-  }
-};
+// Accounts are created by the seed script only. A public sign-up route would let
+// anyone make themselves a faculty advisor of any committee.
 exports.loginUser = async (req, res) => {
   try {
-    const { username, password, role } = req.body;
-    const user = await User.findOne({ username });
+    const { username, password, role, committee } = req.body;
+    if (typeof username !== 'string' || typeof password !== 'string') {
+      return res.status(400).json({ message: 'Please enter your username and password' });
+    }
+    const user = await User.findOne({ username: username.trim() });
     if (!user) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
@@ -46,6 +26,10 @@ exports.loginUser = async (req, res) => {
     }
     if (user.role !== role) {
       return res.status(400).json({ message: `You are not registered as a ${role}` });
+    }
+    // the login page of one committee must not let in another committee's account
+    if (committee && user.committee !== committee) {
+      return res.status(400).json({ message: 'This account does not belong to this committee' });
     }
     const token = generateToken(user._id, user.role);
     res.json({
@@ -61,6 +45,6 @@ exports.loginUser = async (req, res) => {
     });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server Error');
+    res.status(500).json({ message: 'Server Error' });
   }
 };
