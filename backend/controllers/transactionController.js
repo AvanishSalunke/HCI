@@ -1,7 +1,7 @@
 const Transaction = require('../models/Transaction');
 const Fund = require('../models/Fund');
 const { notify } = require('../utils/notify');
-
+// 
 // Turns a mongoose validation problem into a readable 400 instead of "Server Error".
 const sendError = (res, error) => {
   if (error.name === 'ValidationError') {
