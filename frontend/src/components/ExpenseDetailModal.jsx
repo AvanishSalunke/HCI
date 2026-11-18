@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import './ExpenseDetailModal.css';
 
 // --- Icons (Same as your project) ---
@@ -29,9 +30,10 @@ function ExpenseDetailModal({ transaction, onClose, user }) {
 
   if (!transaction) return null;
 
-  return (
-    <div className="modal-backdrop" onClick={handleBackdropClick} data-aos="fade">
-      <div className="modal-content" data-aos="fade-up" data-aos-delay="100">
+  // Drawn at the top of the page so a parent card's animation cannot move it.
+  return createPortal(
+    <div className="modal-backdrop" onClick={handleBackdropClick}>
+      <div className="modal-content">
         <div className="modal-header">
           <h2>{transaction.title}</h2>
           <button onClick={onClose} className="modal-close-btn">&times;</button>
@@ -52,7 +54,7 @@ function ExpenseDetailModal({ transaction, onClose, user }) {
               <UserIcon />
               {/* --- CHANGE 2: "DYNAMIC" LOGIC TO FIND USERNAME --- */}
               <span><strong>Submitted by:</strong> {
-                transaction.user ? transaction.user.username : (user ? user.username : '...loading')
+                transaction.user?.username || user?.username || 'Unknown'
               }</span>
             </div>
             <div className="modal-detail-item">
@@ -84,7 +86,8 @@ function ExpenseDetailModal({ transaction, onClose, user }) {
           </a>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
