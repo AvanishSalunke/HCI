@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { API_BASE } from '../api';
+import { syncSubscription } from '../push';
 import './CommitteeLogin.css';
 import './Login.css';
 
@@ -28,6 +29,7 @@ function Login() {
       const { data } = await axios.post(`${API_BASE}/api/auth/login`, { username, password });
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
+      syncSubscription(); // link this phone to the account for notifications
       navigate(HOME_FOR_ROLE[data.user.role] || '/');
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please try again.');

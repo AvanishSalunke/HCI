@@ -4,6 +4,7 @@ import { committees } from '../committees';
 import './CommitteeLogin.css';
 import axios from 'axios';
 import { API_BASE } from '../api';
+import { syncSubscription } from '../push';
 
 function CommitteeLogin() {
   const [role, setRole] = useState('student');
@@ -53,6 +54,7 @@ function CommitteeLogin() {
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
       
+      syncSubscription(); // link this phone to the account for notifications
       if (user.role === 'student') {
         navigate('/student-dashboard');
       } else if (user.role === 'teacher') {
