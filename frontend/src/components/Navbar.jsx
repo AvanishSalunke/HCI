@@ -9,14 +9,34 @@ const DASHBOARD_FOR_ROLE = {
   admin: '/admin-dashboard',
 };
 
+const BellIcon = () => (
+  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+    <path d="M13.7 21a2 2 0 0 1-3.4 0" />
+  </svg>
+);
+const DownloadIcon = () => (
+  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M12 3v12" />
+    <path d="m7 11 5 5 5-5" />
+    <path d="M5 21h14" />
+  </svg>
+);
+
+const linkClass = ({ isActive }) => (isActive ? 'nav-link active' : 'nav-link');
+
 function Navbar() {
   const navigate = useNavigate();
-  useLocation(); // re-check the saved login whenever the page changes
+  const location = useLocation();
 
+  const [menuOpen, setMenuOpen] = useState(false);
   const [installPrompt, setInstallPrompt] = useState(null);
   const [permission, setPermission] = useState(
     pushSupported() ? Notification.permission : 'unavailable'
   );
+
+  // close the phone menu whenever the page changes
+  useEffect(() => { setMenuOpen(false); }, [location.pathname]);
 
   // Chrome on Android offers the "install" prompt through this event
   useEffect(() => {
@@ -45,6 +65,7 @@ function Navbar() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     syncSubscription(); // this device is no longer tied to the account
+    setMenuOpen(false);
     navigate('/');
   };
 
@@ -70,56 +91,49 @@ function Navbar() {
           <span>Committee Coordinator <em>VJTI</em></span>
         </Link>
 
-        <div className="navbar-links">
-          <NavLink to="/" end className="nav-link">Home</NavLink>
-          <NavLink
-            to="/feedback"
-            className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
-          >
-            Give Feedback
-          </NavLink>
-          <NavLink
-            to="/announcements"
-            className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
-          >
-            All Announcements
-          </NavLink>
-          <NavLink
-            to="/faculty"
-            className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
-          >
-            Faculty Advisors
-          </NavLink>
-          {loggedIn ? (
-            <>
-              <NavLink
-                to={DASHBOARD_FOR_ROLE[user.role] || '/'}
-                className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
-              >
-                My Dashboard
+        <button
+          type="button"
+          className={`nav-toggle ${menuOpen ? 'open' : ''}`}
+          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={menuOpen}
+          aria-controls="nav-menu"
+          onClick={() => setMenuOpen(o => !o)}
+        >
+          <span /><span /><span />
+        </button>
+
+        <div id="nav-menu" className={`navbar-links ${menuOpen ? 'open' : ''}`}>
+          <div className="nav-main">
+            <NavLink to="/" end className={linkClass}>Home</NavLink>
+            <NavLink to="/feedback" className={linkClass}>Feedback</NavLink>
+            <NavLink to="/announcements" className={linkClass}>Announcements</NavLink>
+            <NavLink to="/faculty" className={linkClass}>Faculty</NavLink>
+            {loggedIn && (
+              <NavLink to={DASHBOARD_FOR_ROLE[user.role] || '/'} className={linkClass}>
+                Dashboard
               </NavLink>
-              <button type="button" className="nav-link nav-logout" onClick={handleLogout}>
+            )}
+          </div>
+
+          <div className="nav-actions">
+            {permission === 'default' && (
+              <button type="button" className="nav-icon-btn" onClick={handleEnableNotifications} title="Get notifications">
+                <BellIcon /><span className="nav-label">Get notifications</span>
+              </button>
+            )}
+            {installPrompt && (
+              <button type="button" className="nav-icon-btn" onClick={handleInstall} title="Install app">
+                <DownloadIcon /><span className="nav-label">Install app</span>
+              </button>
+            )}
+            {loggedIn ? (
+              <button type="button" className="nav-cta nav-cta-outline" onClick={handleLogout}>
                 Log out
               </button>
-            </>
-          ) : (
-            <NavLink
-              to="/login"
-              className={({ isActive }) => isActive ? 'nav-link nav-login active' : 'nav-link nav-login'}
-            >
-              Login
-            </NavLink>
-          )}
-          {permission === 'default' && (
-            <button type="button" className="nav-link nav-logout" onClick={handleEnableNotifications}>
-              Get notifications
-            </button>
-          )}
-          {installPrompt && (
-            <button type="button" className="nav-link nav-logout" onClick={handleInstall}>
-              Install app
-            </button>
-          )}
+            ) : (
+              <NavLink to="/login" className="nav-cta">Login</NavLink>
+            )}
+          </div>
         </div>
       </div>
     </nav>
