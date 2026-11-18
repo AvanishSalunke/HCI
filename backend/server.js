@@ -24,7 +24,17 @@ const feedbackRoutes = require('./routes/feedback');
 const adminRoutes = require('./routes/admin');
 const pushRoutes = require('./routes/push');
 
+// Fail early with a clear message instead of a confusing error later.
+for (const name of ['MONGO_URI', 'JWT_SECRET']) {
+  if (!process.env[name]) {
+    console.error(`Missing ${name}. Set it in backend/.env (or the Render Environment tab).`);
+    process.exit(1);
+  }
+}
+
 const app = express();
+// Render sits behind a proxy; this makes req.ip the real visitor address.
+app.set('trust proxy', 1);
 const server = http.createServer(app);
 
 const allowedOrigins = (process.env.FRONTEND_URL || '')
@@ -119,7 +129,33 @@ app.get('/api/version', (req, res) => {
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to the VJTI Fund Tracker API!' });
 });
+
+// Unknown address
+app.use((req, res) => {
+  res.status(404).json({ message: 'Not found' });
+});
+
+// Anything that goes wrong is answered in the same JSON shape the website expects.
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => {
+  if (err.message === 'Not allowed by CORS') {
+    return res.status(403).json({ message: 'This website is not allowed to use the API' });
+  }
+  if (err.type === 'entity.too.large') {
+    return res.status(413).json({ message: 'That upload is too large' });
+  }
+  if (err.type === 'entity.parse.failed') {
+    return res.status(400).json({ message: 'The request could not be read' });
+  }
+  console.error(err);
+  res.status(500).json({ message: 'Server Error' });
+});
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
+});
+
+// Render stops the service with SIGTERM on every deploy; close cleanly.
+process.on('SIGTERM', () => {
+  server.close(() => mongoose.connection.close(false).finally(() => process.exit(0)));
 });
