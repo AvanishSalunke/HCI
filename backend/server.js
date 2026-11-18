@@ -112,6 +112,10 @@ app.use('/api/events', eventRoutes);
 app.use('/api/feedback', feedbackRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/push', pushRoutes);
+// Which version of the code is running. The deploy check on GitHub reads this.
+app.get('/api/version', (req, res) => {
+  res.json({ commit: process.env.RENDER_GIT_COMMIT || 'unknown' });
+});
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to the VJTI Fund Tracker API!' });
 });
