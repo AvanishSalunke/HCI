@@ -122,7 +122,7 @@ Each committee has one chat room shared by its student, its faculty and the admi
 │   ├── createAdmin.js       Adds only the admin account
 │   ├── controllers/         Request handlers, one file per feature
 │   ├── routes/              URL to controller wiring
-│   ├── middleware/          Login and role checks
+│   ├── middleware/          Login and role checks, login rate limit
 │   ├── models/              Mongoose schemas
 │   └── utils/notify.js      Sends the push notifications
 ├── frontend/
@@ -257,7 +257,7 @@ All routes are under the backend address. "Login" means a token in the `Authoriz
 
 | Area | Routes | Who |
 | --- | --- | --- |
-| Auth | `POST /api/auth/login` | Anyone |
+| Auth | `POST /api/auth/login` (limited to 20 tries per 15 minutes per address) | Anyone |
 | Funds | `GET /api/funds/my-committee` | Student, faculty |
 | Expenses | `POST /api/transactions`, `GET /api/transactions/my-transactions` | Student |
 | | `GET /api/transactions/committee`, `PUT /api/transactions/:id/status` | Faculty |
@@ -292,13 +292,12 @@ Under the hood, `frontend/public/sw.js` is the service worker that shows notific
 
 Production runs on Render, and everything is described in [`render.yaml`](render.yaml): a Node web service for the backend and a static site for the website. [DEPLOY.md](DEPLOY.md) has the step-by-step setup.
 
-**Updating the live site** takes no extra steps. Push to the `main` branch, and Render rebuilds and redeploys both services. The installed phone app picks up the new version the next time it is opened.
-
-**The deploy check.** Every push to `main` also runs a GitHub Actions workflow:
+**Updating the live site** takes no extra steps. Push to the `main` branch and a GitHub Actions workflow (`.github/workflows/deploy-check.yml`) runs:
 1. It builds the website, lints it and syntax-checks every backend file.
-2. It then waits until the live backend (`/api/version`) and the live website (`/version.json`) both report the commit that was just pushed.
+2. It asks Render to deploy that exact commit, for both services, using Render's deploy hooks (kept as the repository secrets `RENDER_DEPLOY_HOOK_API` and `RENDER_DEPLOY_HOOK_WEB`, see [DEPLOY.md](DEPLOY.md#one-time-connect-github-to-render-with-deploy-hooks)).
+3. It waits until the live backend (`/api/version`) and the live website (`/version.json`) both report that commit.
 
-When both are live, the commit gets a green tick on GitHub. A red cross means a check failed, or the deploy did not finish within 20 minutes. Open the failed run in the Actions tab to see where.
+When both are live, the commit gets a green tick on GitHub. A red cross means a check failed, or the deploy did not finish within 20 minutes. Open the failed run in the Actions tab to see where. The installed phone app picks up the new version the next time it is opened. Pull requests only run the first step. [DEPLOY.md](DEPLOY.md#troubleshooting) lists common problems and fixes.
 
 Settings kept in the Render dashboard (database address, keys, `FRONTEND_URL`) are not changed by a push. Change those in the dashboard under the service's **Environment** tab.
 
