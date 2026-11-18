@@ -535,3 +535,24 @@
   font-weight: 700;
   box-shadow: 0 4px 12px rgba(56,163,245,0.4);
 }
+
+
+/* -- Polish -- */
+.hero-text-panel h1, .home-feedback h2 { font-family: var(--font-display); font-weight: 800; letter-spacing: -0.03em; }
+.hero-logo { animation: bob 5s ease-in-out infinite; }
+@keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+
+.home-event-row { animation: rise 0.5s ease both; }
+.home-event-row:nth-child(2) { animation-delay: 0.06s; }
+.home-event-row:nth-child(3) { animation-delay: 0.12s; }
+.home-event-row:nth-child(4) { animation-delay: 0.18s; }
+.home-event-row:nth-child(n+5) { animation-delay: 0.24s; }
+.home-event-main h3 { font-family: var(--font-display); }
+
+.announcements-header h2, .committee-grid-header h2 { font-family: var(--font-display); font-weight: 800; }
+.committee-card-flip { animation: rise 0.55s ease both; }
+.committee-card-flip:nth-child(3n+2) { animation-delay: 0.08s; }
+.committee-card-flip:nth-child(3n+3) { animation-delay: 0.16s; }
+.committee-card-flip:hover .flip-front { box-shadow: var(--shadow-hover); }
+.card-aesthetic-name h3 { font-family: var(--font-display); }
+.flip-back h3 { font-family: var(--font-display); }
