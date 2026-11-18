@@ -1,4 +1,5 @@
 const Announcement = require('../models/Announcement');
+const { notify } = require('../utils/notify');
 
 const createAnnouncement = async (req, res) => {
   try {
@@ -16,6 +17,12 @@ const createAnnouncement = async (req, res) => {
     });
     const created = await announcement.save();
     await created.populate('postedBy', 'username committee role');
+    notify({}, {
+      title: req.user.role === 'admin' ? 'New announcement from Admin' : 'New announcement',
+      body: created.title,
+      url: '/announcements',
+      tag: `announcement-${created._id}`,
+    });
     res.status(201).json(created);
   } catch (err) {
     res.status(500).json({ message: err.message || 'Server Error' });
