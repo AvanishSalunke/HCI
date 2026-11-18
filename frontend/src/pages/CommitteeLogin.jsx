@@ -23,7 +23,7 @@ function CommitteeLogin() {
     if (committee) {
       setCurrentCommittee(committee);
     } else {
-      navigate('/committees');
+      navigate('/');
     }
   }, [committeeId, navigate]);
 
