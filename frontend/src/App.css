@@ -246,3 +246,39 @@ main { animation: fadeUp 0.5s ease both; }
 .tab-button { font-family: var(--font-display); }
 .tab-content { animation: rise 0.4s ease both; }
 .status-badge { letter-spacing: 0.02em; }
+
+
+/* -- Mobile layout (phones and small tablets) -- */
+@media (max-width: 768px) {
+  .page-container { padding: 1.25rem 1rem; }
+  .page-header { padding-bottom: 1.25rem; margin-bottom: 1.5rem; }
+  .page-header h1 { font-size: 1.7rem; }
+  .page-header p { font-size: 0.95rem; }
+
+  .btn { padding: 0.85rem 1.25rem; min-height: 46px; }
+  .form-group input, .form-group select, .form-group textarea { padding: 0.8rem 0.9rem; }
+
+  .stat-card-row { gap: 1rem; margin-bottom: 1.25rem; }
+  .stat-card { padding: 1.1rem; }
+  .stat-card .stat-icon { width: 44px; height: 44px; }
+  .stat-card .stat-info p { font-size: 1.5rem; }
+
+  /* tabs scroll sideways instead of wrapping into a pile */
+  .dashboard-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 0 0.5rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .dashboard-tabs::-webkit-scrollbar { display: none; }
+  .tab-button { white-space: nowrap; padding: 0.9rem 1rem; flex-shrink: 0; font-size: 0.9rem; }
+  .tab-content { padding: 1rem; }
+
+  .committee-grid-layout { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; }
+}
+
+/* hover lifts feel odd on touch screens */
+@media (hover: none) {
+  .card:hover, .stat-card:hover, .nav-link:hover { transform: none; }
+}
