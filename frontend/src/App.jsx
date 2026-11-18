@@ -7,6 +7,8 @@ import Navbar from './components/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
 import Welcome from './pages/Welcome';
 import CommitteeLogin from './pages/CommitteeLogin';
+import Login from './pages/Login';
+import AdminDashboard from './pages/AdminDashboard';
 import Announcements from './pages/Announcements';
 import Feedback from './pages/Feedback';
 import Faculty from './pages/Faculty';
@@ -31,11 +33,13 @@ function App() {
       <main>
         <Routes>
           <Route path="/" element={<Welcome />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/login/:committeeId" element={<CommitteeLogin />} />
           <Route path="/feedback" element={<Feedback />} />
           <Route path="/announcements" element={<Announcements />} />
           <Route path="/faculty" element={<Faculty />} />
           <Route path="/student-dashboard" element={<ProtectedRoute role="student"><StudentDashboard /></ProtectedRoute>} />
+          <Route path="/admin-dashboard" element={<ProtectedRoute role="admin"><AdminDashboard /></ProtectedRoute>} />
           <Route path="/teacher-dashboard" element={<ProtectedRoute role="teacher"><TeacherDashboard /></ProtectedRoute>} />
         </Routes>
       </main>

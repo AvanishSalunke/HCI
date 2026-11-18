@@ -1,0 +1,117 @@
+/* --- Admin Dashboard (uses the same cards, tabs and tables as the other dashboards) --- */
+
+.adm-badge {
+  display: inline-block;
+  min-width: 1.4rem;
+  margin-left: 0.5rem;
+  padding: 0.05rem 0.45rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.4;
+  text-align: center;
+  color: var(--white);
+  background: #d93025;
+  border-radius: 999px;
+}
+.adm-new {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.05rem 0.45rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--white);
+  background: #d93025;
+  border-radius: 999px;
+  vertical-align: middle;
+}
+
+.adm-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  margin-bottom: 0.75rem;
+}
+.adm-push { margin-left: auto; }
+.adm-select {
+  padding: 0.6rem 0.9rem;
+  font: inherit;
+  color: var(--text-color);
+  background: var(--bg-tint);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+}
+.adm-select:focus { outline: none; border-color: var(--accent-bright); box-shadow: var(--glow-accent); }
+.adm-check { display: flex; align-items: center; gap: 0.45rem; font-size: 0.92rem; color: var(--text-color); cursor: pointer; }
+.adm-hint { font-size: 0.88rem; color: var(--text-light); margin-bottom: 1rem; }
+.adm-none { color: var(--text-light); font-style: italic; }
+.adm-sub { display: block; font-size: 0.8rem; font-weight: 400; color: var(--text-light); }
+.adm-note { max-width: 260px; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+/* unread approvals stand out with a red edge */
+.adm-row-unread td:first-child { box-shadow: inset 4px 0 0 #d93025; }
+.adm-row-unread td { background: #fff8f7; }
+
+.adm-section { margin-bottom: 2.25rem; }
+.adm-section:last-child { margin-bottom: 0; }
+.adm-section > h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 0.25rem;
+}
+.adm-user-form { max-width: 640px; }
+.adm-user-form .form-row { gap: 1rem; }
+
+.adm-committee-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.1rem;
+  margin-top: 1rem;
+}
+.adm-committee-card {
+  padding: 1.1rem 1.2rem;
+  background: var(--white);
+  border: 1px solid var(--border-color);
+  border-top: 3px solid var(--accent-color);
+  border-radius: var(--border-radius);
+  transition: box-shadow 0.2s ease;
+}
+.adm-committee-card:hover { box-shadow: var(--shadow-hover); }
+.adm-committee-head { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.8rem; }
+.adm-committee-head img { width: 36px; height: 36px; object-fit: contain; border-radius: 50%; border: 1px solid var(--border-color); background: var(--white); }
+.adm-committee-head h4 { font-family: var(--font-display); font-size: 1rem; color: var(--primary-color); }
+.adm-role-label {
+  display: block;
+  margin-top: 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-light);
+}
+.adm-committee-card ul { list-style: none; margin-top: 0.3rem; }
+.adm-member {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.35rem 0;
+  font-size: 0.92rem;
+  border-bottom: 1px solid var(--border-color);
+  overflow-wrap: anywhere;
+}
+.adm-member:last-child { border-bottom: none; }
+
+.adm-chat-select { margin-bottom: 0.75rem; align-self: flex-start; }
+
+@media (max-width: 768px) {
+  .adm-push { margin-left: 0; width: 100%; justify-content: center; }
+  .adm-select { width: 100%; }
+  .adm-note { max-width: none; }
+  .adm-committee-grid { grid-template-columns: 1fr; }
+  .adm-row-unread td { background: transparent; }
+  .adm-row-unread { background: #fff8f7 !important; border-left: 4px solid #d93025 !important; }
+  .adm-user-form .form-row { gap: 0; }
+}

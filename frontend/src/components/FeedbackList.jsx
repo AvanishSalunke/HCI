@@ -9,15 +9,15 @@ import './Feedback.css';
 const attachmentsOf = (f) => (f.images && f.images.length ? f.images : (f.image ? [f.image] : []));
 
 // Read-only view of feedback received by the logged-in user's committee.
-function FeedbackList() {
+function FeedbackList({ url = '/api/feedback', initialEvent = 'all' }) {
   const [feedback, setFeedback] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [eventFilter, setEventFilter] = useState('all');
+  const [eventFilter, setEventFilter] = useState(initialEvent);
   const [viewer, setViewer] = useState(null); // { images, index }
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    axios.get(`${API_BASE}/api/feedback`, { headers: { Authorization: `Bearer ${token}` } })
+    axios.get(`${API_BASE}${url}`, { headers: { Authorization: `Bearer ${token}` } })
       .then(res => setFeedback(res.data))
       .catch(err => console.error('Error fetching feedback', err))
       .finally(() => setLoading(false));
