@@ -71,6 +71,8 @@ function StudentDashboard() {
     if (userFromStorage) {
       setCurrentUser(userFromStorage);
     }
+    // load once when the page opens
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -107,6 +109,8 @@ function StudentDashboard() {
         if (socketRef.current) socketRef.current.disconnect();
       };
     }
+    // the token is read fresh from storage on each run
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, currentUser]);
 
   const handleSendMessage = async (e) => {

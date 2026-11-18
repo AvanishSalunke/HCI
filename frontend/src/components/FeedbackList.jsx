@@ -21,7 +21,7 @@ function FeedbackList({ url = '/api/feedback', initialEvent = 'all' }) {
       .then(res => setFeedback(res.data))
       .catch(err => console.error('Error fetching feedback', err))
       .finally(() => setLoading(false));
-  }, []);
+  }, [url]);
 
   // Distinct events that have feedback
   const eventOptions = useMemo(() => {
