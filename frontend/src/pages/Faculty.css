@@ -1,0 +1,98 @@
+/* --- Faculty Page --- */
+
+.head-advisor-section { margin-bottom: 3rem; }
+
+.card.faculty-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.5rem 2rem;
+  padding: 2rem;
+  background: var(--gradient-primary) !important;
+  color: var(--white);
+  border: none;
+  border-radius: var(--border-radius);
+}
+
+.faculty-card-head img {
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--accent-bright);
+  flex-shrink: 0;
+}
+
+.faculty-info-head { flex: 1; min-width: 200px; }
+.faculty-card-head .faculty-info-head h3 {
+  color: #ffffff;
+  font-size: 1.7rem;
+  font-weight: 700;
+}
+.faculty-card-head .faculty-info-head .faculty-dept-head {
+  color: rgba(255,255,255,0.75);
+  font-size: 0.95rem;
+  margin-top: 0.25rem;
+}
+
+.faculty-committee-tag-head {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  background: var(--white);
+  padding: 0.45rem 1rem;
+  border-radius: 6px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.grid-header {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.faculty-card-vertical {
+  padding: 2rem 1.5rem;
+  text-align: center;
+  border-top: 3px solid transparent;
+  transition: box-shadow 0.2s ease, border-top-color 0.2s ease, transform 0.2s ease;
+}
+.faculty-card-vertical:hover {
+  box-shadow: var(--shadow-hover);
+  border-top-color: var(--accent-warm);
+  transform: translateY(-4px);
+}
+
+.faculty-card-vertical .faculty-photo img {
+  width: 96px; height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--bg-light);
+  margin-bottom: 1rem;
+}
+
+.faculty-info-vertical h3 {
+  color: var(--primary-color);
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+.faculty-info-vertical .faculty-dept-vertical {
+  color: var(--text-light);
+  font-size: 0.88rem;
+  margin-bottom: 1.25rem;
+}
+
+.faculty-committee-tag {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-color);
+  background: var(--bg-light);
+  padding: 0.3rem 0.8rem;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  display: inline-block;
+}
