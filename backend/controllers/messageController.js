@@ -1,5 +1,7 @@
 const Message = require('../models/Message');
 
+const MAX_MESSAGE_LENGTH = 1000;
+
 const getMessages = async (req, res) => {
   try {
     const { committee } = req.user;
@@ -15,11 +17,14 @@ const getMessages = async (req, res) => {
 
 const sendMessage = async (req, res) => {
   try {
-    const { text } = req.body;
     const { _id: sender, committee } = req.user;
+    const text = typeof req.body.text === 'string' ? req.body.text.trim() : '';
 
     if (!text) {
       return res.status(400).json({ message: 'Message text is required' });
+    }
+    if (text.length > MAX_MESSAGE_LENGTH) {
+      return res.status(400).json({ message: `Messages can be at most ${MAX_MESSAGE_LENGTH} characters` });
     }
 
     const newMessage = await Message.create({
