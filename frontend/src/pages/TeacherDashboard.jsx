@@ -26,6 +26,9 @@ function TeacherDashboard() {
   const [rejectTarget, setRejectTarget] = useState(null);
   const [rejectionReason, setRejectionReason] = useState('');
 
+  const [approveTarget, setApproveTarget] = useState(null); // { type, id }
+  const [approveNote, setApproveNote] = useState('');
+
   const [currentUser, setCurrentUser] = useState(null);
 
   const [chatMessages, setChatMessages] = useState([]);
@@ -118,12 +121,28 @@ function TeacherDashboard() {
     }
   };
 
-  const handleApprove = async (id) => {
+  // Approving opens a small box where faculty can leave a note for the admin.
+  const handleApprove = (id) => {
+    setApproveTarget({ type: 'expense', id });
+    setApproveNote('');
+  };
+
+  const handleConfirmApprove = async () => {
+    if (!approveTarget) return;
+    const config = { headers: { 'Content-Type': 'application/json', ...authConfig.headers } };
+    const isExpense = approveTarget.type === 'expense';
     try {
-      const config = { headers: { 'Content-Type': 'application/json', ...authConfig.headers } };
-      await axios.put(`${API_BASE}/api/transactions/${id}/status`, { status: 'approved' }, config);
-      fetchData();
-    } catch (err) { console.error(err); }
+      await axios.put(
+        `${API_BASE}/api/${isExpense ? 'transactions' : 'sponsorships'}/${approveTarget.id}/status`,
+        { status: isExpense ? 'approved' : 'confirmed', adminNote: approveNote },
+        config
+      );
+    } catch (err) {
+      alert(err.response?.data?.message || 'Could not complete this.');
+    }
+    setApproveTarget(null);
+    setApproveNote('');
+    fetchData();
   };
 
   const openRejectModal = (id) => {
@@ -142,14 +161,6 @@ function TeacherDashboard() {
       );
       setRejectTarget(null);
       setRejectionReason('');
-      fetchData();
-    } catch (err) { console.error(err); }
-  };
-
-  const handleUpdateSponsorshipStatus = async (id, newStatus) => {
-    try {
-      const config = { headers: { 'Content-Type': 'application/json', ...authConfig.headers } };
-      await axios.put(`${API_BASE}/api/sponsorships/${id}/status`, { status: newStatus }, config);
       fetchData();
     } catch (err) { console.error(err); }
   };
@@ -252,7 +263,7 @@ function TeacherDashboard() {
                   {!loading && pendingTransactions.length === 0 && <tr><td colSpan="5">No pending expenses.</td></tr>}
                   {!loading && pendingTransactions.map(t => (
                     <tr key={t._id}>
-                      <td data-label="Student">{t.user.username}</td>
+                      <td data-label="Student">{t.user?.username || 'Removed user'}</td>
                       <td data-label="Title">{t.title}</td>
                       <td data-label="Amount">₹{t.amount.toLocaleString('en-IN')}</td>
                       <td data-label="Receipt"><a href={t.receiptLink} target="_blank" rel="noopener noreferrer">View Proof</a></td>
@@ -279,14 +290,14 @@ function TeacherDashboard() {
                       <p>
                         <span>Pledged:</span> ₹{s.amountPledged.toLocaleString('en-IN')}
                         <span style={{ margin: '0 8px' }}>|</span>
-                        <span>By:</span> {s.user.username}
+                        <span>By:</span> {s.user?.username || 'Removed user'}
                       </p>
                     </div>
                     <div className="queue-card-actions">
                       <button className="btn-action btn-expand" onClick={() => setExpandedId(expandedId === s._id ? null : s._id)}>
                         Details <ChevronDown />
                       </button>
-                      <button className="btn-action btn-approve" onClick={() => handleUpdateSponsorshipStatus(s._id, 'confirmed')}>
+                      <button className="btn-action btn-approve" onClick={() => { setApproveTarget({ type: 'sponsorship', id: s._id }); setApproveNote(''); }}>
                         Confirm Funds
                       </button>
                     </div>
@@ -316,7 +327,7 @@ function TeacherDashboard() {
                   {!loading && allOtherTransactions.length === 0 && <tr><td colSpan="5">No approved or rejected expenses.</td></tr>}
                   {!loading && allOtherTransactions.map(t => (
                     <tr key={t._id}>
-                      <td data-label="Student">{t.user.username}</td>
+                      <td data-label="Student">{t.user?.username || 'Removed user'}</td>
                       <td data-label="Title">{t.title}</td>
                       <td data-label="Amount">₹{t.amount.toLocaleString('en-IN')}</td>
                       <td data-label="Status">
@@ -398,7 +409,7 @@ function TeacherDashboard() {
                   const senderId = msg.sender?._id || msg.sender;
                   const isMine = senderId === currentUser?._id || senderId === currentUser?.id;
                   return (
-                    <div key={index} style={{
+                    <div key={index} className={msg.sender?.role === 'admin' ? 'chat-msg chat-admin' : 'chat-msg'} style={{
                       alignSelf: isMine ? 'flex-end' : 'flex-start',
                       backgroundColor: isMine ? '#e1f5fe' : '#f1f1f1',
                       padding: '8px 12px',
@@ -406,7 +417,7 @@ function TeacherDashboard() {
                       maxWidth: '70%'
                     }}>
                       <strong style={{ display: 'block', fontSize: '0.8rem', color: '#555', marginBottom: '4px' }}>
-                        {msg.sender?.username || 'Unknown'} ({msg.sender?.role || 'user'})
+                        {msg.sender?.role === 'admin' ? 'ADMIN' : `${msg.sender?.username || 'Removed user'} (${msg.sender?.role || 'user'})`}
                       </strong>
                       <span>{msg.text}</span>
                     </div>
@@ -435,6 +446,33 @@ function TeacherDashboard() {
           transaction={selectedTransaction}
           onClose={() => setSelectedTransaction(null)}
         />
+      )}
+
+      {/* Approve / confirm: optional note for the admin */}
+      {approveTarget && (
+        <div className="modal-backdrop" onClick={() => setApproveTarget(null)}>
+          <div className="reject-modal" onClick={e => e.stopPropagation()}>
+            <h2>{approveTarget.type === 'expense' ? 'Approve Expense' : 'Confirm Sponsorship'}</h2>
+            <p>Once done, it is sent to the admin. You can leave a special note for them (optional).</p>
+            <div className="form-group">
+              <label htmlFor="approveNote">Note for the admin</label>
+              <textarea
+                id="approveNote"
+                value={approveNote}
+                onChange={e => setApproveNote(e.target.value)}
+                placeholder="e.g., Within budget. Vendor has asked for payment by Friday."
+                rows={4}
+                maxLength={1000}
+              />
+            </div>
+            <div className="reject-modal-actions">
+              <button className="btn btn-secondary" onClick={() => setApproveTarget(null)}>Cancel</button>
+              <button className="btn btn-primary" onClick={handleConfirmApprove}>
+                {approveTarget.type === 'expense' ? 'Approve' : 'Confirm Funds'}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Rejection Reason Modal */}

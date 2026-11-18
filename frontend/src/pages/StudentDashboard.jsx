@@ -373,7 +373,7 @@ function StudentDashboard() {
                   const senderId = msg.sender?._id || msg.sender;
                   const isMine = senderId === currentUser?._id || senderId === currentUser?.id;
                   return (
-                    <div key={index} style={{
+                    <div key={index} className={msg.sender?.role === 'admin' ? 'chat-msg chat-admin' : 'chat-msg'} style={{
                       alignSelf: isMine ? 'flex-end' : 'flex-start',
                       backgroundColor: isMine ? '#e1f5fe' : '#f1f1f1',
                       padding: '8px 12px',
@@ -381,7 +381,7 @@ function StudentDashboard() {
                       maxWidth: '70%'
                     }}>
                       <strong style={{ display: 'block', fontSize: '0.8rem', color: '#555', marginBottom: '4px' }}>
-                        {msg.sender?.username || 'Unknown'} ({msg.sender?.role || 'user'})
+                        {msg.sender?.role === 'admin' ? 'ADMIN' : `${msg.sender?.username || 'Removed user'} (${msg.sender?.role || 'user'})`}
                       </strong>
                       <span>{msg.text}</span>
                     </div>

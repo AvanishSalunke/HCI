@@ -229,6 +229,14 @@
 }
 .tab-content { padding: 1.5rem; }
 
+/* 10. ADMIN MARKER IN CHAT (red) */
+.chat-window > .chat-admin {
+  background-color: #fdecea !important;
+  border: 1px solid #f0b4af;
+  border-left: 4px solid #d93025;
+}
+.chat-window > .chat-admin strong { color: #b3261e !important; letter-spacing: 0.06em; }
+
 
 /* -- Polish: smoother motion, clearer hierarchy -- */
 main { animation: fadeUp 0.5s ease both; }
