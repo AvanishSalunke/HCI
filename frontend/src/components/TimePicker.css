@@ -126,3 +126,18 @@
 .tp-cancel:hover { color: var(--primary-color); }
 .tp-ok { background: var(--gradient-accent); border: none; color: var(--white); }
 .tp-ok:hover { box-shadow: var(--glow-accent); }
+
+
+/* ═══════════ DARK NEON THEME ═══════════ */
+.tp-trigger { background: rgba(6, 15, 33, 0.85); }
+.tp-popover {
+  background: #0a1630;
+  border-color: rgba(56,163,245,0.35);
+  box-shadow: 0 0 40px rgba(56,163,245,0.3), 0 20px 50px rgba(0,0,0,0.7);
+  animation: tpPop 0.3s cubic-bezier(0.2, 1.2, 0.4, 1) both;
+}
+@keyframes tpPop { from { opacity: 0; transform: scale(0.9) translateY(-10px); } to { opacity: 1; transform: none; } }
+.tp-band { background: rgba(56, 163, 245, 0.2); box-shadow: 0 0 20px rgba(56,163,245,0.4); }
+.tp-item.selected { color: var(--white); text-shadow: 0 0 16px rgba(56,163,245,0.9); }
+.tp-colon { color: var(--white); }
+.tp-cancel:hover { color: var(--white); }
