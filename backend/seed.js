@@ -2,25 +2,12 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const dotenv = require('dotenv');
 const User = require('./models/User');
+const committees = require('./committees');
 dotenv.config();
 
 if (process.env.DNS_SERVERS) {
   require('dns').setServers(process.env.DNS_SERVERS.split(',').map(s => s.trim()));
 }
-const committees = [
-  { id: 'technovanza', name: 'Technovanza' },
-  { id: 'sra', name: 'SRA' },
-  { id: 'pratibimb', name: 'Pratibimb' },
-  { id: 'enthusia', name: 'Enthusia' },
-  { id: 'rangawardhan', name: 'Rangawardhan' },
-  { id: 'coc', name: 'COC' },
-  { id: 'vjti-racing', name: 'VJTI Racing' },
-  { id: 'digital-vjti', name: 'Digital VJTI' },
-  { id: 'vishwa-vjti', name: 'Vishwa VJTI' },
-  { id: 'synergists', name: 'Synergists' },
-  { id: 'ecell', name: 'E-Cell' },
-  { id: 'alumni', name: 'Alumni Association' },
-];
 const seedUsers = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
@@ -44,8 +31,14 @@ const seedUsers = async () => {
         committee: committee.id,
       });
     }
+    users.push({
+      username: 'admin',
+      password: hashedPassword,
+      role: 'admin',
+      committee: 'admin',
+    });
     await User.insertMany(users);
-    console.log(`Seeded ${users.length} users successfully!\n`);
+    console.log(`Seeded ${users.length} users successfully (including the admin account)!\n`);
     console.log('=== DUMMY LOGIN CREDENTIALS ===');
     console.log('Password for ALL accounts: 123\n');
     console.log('Committee'.padEnd(20), 'Student Username'.padEnd(30), 'Teacher Username');
