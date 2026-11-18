@@ -4,6 +4,9 @@ services:
     runtime: node
     plan: free
     rootDir: backend
+    # deploy as soon as a commit lands on main (do not wait for GitHub checks:
+    # the deploy check on GitHub itself waits for this deploy)
+    autoDeployTrigger: commit
     buildCommand: npm install
     startCommand: npm start
     healthCheckPath: /
@@ -27,6 +30,7 @@ services:
     name: committee-coordinator-vjti
     runtime: static
     rootDir: frontend
+    autoDeployTrigger: commit
     buildCommand: npm install && npm run build
     staticPublishPath: dist
     envVars:
