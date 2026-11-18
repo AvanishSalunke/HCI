@@ -104,3 +104,14 @@
 .faculty-card-vertical .faculty-photo img { transition: transform 0.4s ease; }
 .faculty-card-vertical:hover .faculty-photo img { transform: scale(1.06); }
 .faculty-info-vertical h3 { font-family: var(--font-display); }
+
+
+/* -- Mobile -- */
+@media (max-width: 768px) {
+  .head-advisor-section { margin-bottom: 2rem; }
+  .card.faculty-card-head { flex-direction: column; text-align: center; padding: 1.5rem 1.25rem; }
+  .faculty-card-head .faculty-info-head h3 { font-size: 1.4rem; }
+  .faculty-committee-tag-head { margin-left: 0; }
+  .grid-header { font-size: 1.4rem; }
+  .faculty-card-vertical { padding: 1.5rem 1rem; }
+}
