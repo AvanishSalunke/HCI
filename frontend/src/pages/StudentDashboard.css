@@ -76,3 +76,55 @@
   box-shadow: 0 4px 14px rgba(11,37,69,0.08);
   border-color: var(--accent-color);
 }
+
+
+/* ═══════════ DARK NEON THEME ═══════════ */
+.form-success { color: #5ee59a; background: rgba(46,204,113,0.12); border: 1px solid rgba(46,204,113,0.45); box-shadow: 0 0 20px rgba(46,204,113,0.2); }
+.form-error   { color: #ff8a7d; background: rgba(231,76,60,0.12);  border: 1px solid rgba(231,76,60,0.45);  box-shadow: 0 0 20px rgba(231,76,60,0.2); }
+.form-success, .form-error { animation: riseIn 0.4s ease both; }
+
+.card-header h2 {
+  font-weight: 800;
+  background: var(--gradient-text);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmerText 7s linear infinite;
+}
+
+.expense-item {
+  background-color: rgba(6, 15, 33, 0.7);
+  animation: riseIn 0.55s ease both;
+}
+.expense-item:nth-child(2) { animation-delay: 0.06s; }
+.expense-item:nth-child(3) { animation-delay: 0.12s; }
+.expense-item:nth-child(4) { animation-delay: 0.18s; }
+.expense-item:nth-child(n+5) { animation-delay: 0.24s; }
+.expense-item:hover {
+  background: rgba(13, 30, 60, 0.9);
+  border-color: var(--accent-bright);
+}
+.expense-item-info h4 { color: var(--white); }
+.expense-item.clickable:hover {
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 0 28px rgba(56,163,245,0.35);
+}
+
+/* chat: overrides the light inline bubble colours */
+.chat-window {
+  border: 1px solid var(--border-color) !important;
+  background: rgba(4, 10, 24, 0.7);
+}
+.chat-window > div[style] {
+  background-color: rgba(26, 110, 181, 0.28) !important;
+  border: 1px solid rgba(56,163,245,0.35);
+  color: var(--text-color);
+  animation: popIn 0.35s cubic-bezier(0.2, 1.2, 0.4, 1) both;
+}
+.chat-window > div[style*="flex-start"] { background-color: rgba(30, 48, 82, 0.85) !important; border-color: rgba(143,170,210,0.25); }
+.chat-window strong { color: #8fcaff !important; }
+.chat-window p { color: var(--text-light) !important; }
+.messages-container input { background: rgba(6,15,33,0.9); color: var(--text-color); border: 1px solid var(--border-color) !important; }
+.messages-container input:focus { outline: none; border-color: var(--accent-bright) !important; box-shadow: var(--glow-accent); }
+@keyframes popIn { from { opacity: 0; transform: scale(0.8) translateY(10px); } to { opacity: 1; transform: none; } }
