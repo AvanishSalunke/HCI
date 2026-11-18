@@ -1,5 +1,6 @@
 const Transaction = require('../models/Transaction');
 const Fund = require('../models/Fund');
+const { notify } = require('../utils/notify');
 
 // Turns a mongoose validation problem into a readable 400 instead of "Server Error".
 const sendError = (res, error) => {
@@ -31,6 +32,12 @@ const createTransaction = async (req, res) => {
       committee: req.user.committee,
     });
     const createdTransaction = await transaction.save();
+    notify({ role: 'teacher', committee: req.user.committee }, {
+      title: 'New expense to review',
+      body: `${req.user.username}: ${createdTransaction.title} (₹${createdTransaction.amount.toLocaleString('en-IN')})`,
+      url: '/teacher-dashboard',
+      tag: `expense-${createdTransaction._id}`,
+    });
     res.status(201).json(createdTransaction);
   } catch (error) { sendError(res, error); }
 };
@@ -82,6 +89,21 @@ const updateTransactionStatus = async (req, res) => {
         { committee: req.user.committee },
         { $inc: { totalExpenses: updatedTransaction.amount } }
       );
+    }
+    const approved = status === 'approved';
+    notify({ user: updatedTransaction.user }, {
+      title: approved ? 'Expense approved' : 'Expense rejected',
+      body: approved ? updatedTransaction.title : `${updatedTransaction.title}${rejectionReason ? `: ${rejectionReason}` : ''}`,
+      url: '/student-dashboard',
+      tag: `expense-${updatedTransaction._id}`,
+    });
+    if (approved) {
+      notify({ role: 'admin' }, {
+        title: updatedTransaction.adminNote ? 'Expense approved (with a note)' : 'Expense approved',
+        body: `${updatedTransaction.title} · ₹${updatedTransaction.amount.toLocaleString('en-IN')}`,
+        url: '/admin-dashboard',
+        tag: `approval-${updatedTransaction._id}`,
+      });
     }
     res.json(updatedTransaction);
   } catch (error) { sendError(res, error); }

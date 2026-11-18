@@ -1,5 +1,6 @@
 const Sponsorship = require('../models/Sponsorship');
 const Fund = require('../models/Fund');
+const { notify } = require('../utils/notify');
 
 // Turns a mongoose validation problem into a readable 400 instead of "Server Error".
 const sendError = (res, error) => {
@@ -33,6 +34,12 @@ const createSponsorship = async (req, res) => {
       committee: req.user.committee,
     });
     const createdSponsorship = await sponsorship.save();
+    notify({ role: 'teacher', committee: req.user.committee }, {
+      title: 'New sponsorship to review',
+      body: `${req.user.username}: ${createdSponsorship.companyName} (₹${createdSponsorship.amountPledged.toLocaleString('en-IN')})`,
+      url: '/teacher-dashboard',
+      tag: `sponsorship-${createdSponsorship._id}`,
+    });
     res.status(201).json(createdSponsorship);
   } catch (error) { sendError(res, error); }
 };
@@ -81,6 +88,18 @@ const updateSponsorshipStatus = async (req, res) => {
       { committee: req.user.committee },
       { $inc: { totalFunds: updatedSponsorship.amountPledged } }
     );
+    notify({ user: updatedSponsorship.user }, {
+      title: 'Sponsorship confirmed',
+      body: updatedSponsorship.companyName,
+      url: '/student-dashboard',
+      tag: `sponsorship-${updatedSponsorship._id}`,
+    });
+    notify({ role: 'admin' }, {
+      title: updatedSponsorship.adminNote ? 'Sponsorship confirmed (with a note)' : 'Sponsorship confirmed',
+      body: `${updatedSponsorship.companyName} · ₹${updatedSponsorship.amountPledged.toLocaleString('en-IN')}`,
+      url: '/admin-dashboard',
+      tag: `approval-${updatedSponsorship._id}`,
+    });
     res.json(updatedSponsorship);
   } catch (error) { sendError(res, error); }
 };
