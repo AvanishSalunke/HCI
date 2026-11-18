@@ -151,3 +151,26 @@
   padding: 0.75rem 1rem;
 }
 /* --- End of Modal CSS --- */
+
+/* ═══════════ DARK NEON THEME ═══════════ */
+.modal-backdrop { background: rgba(2, 6, 16, 0.8); }
+.modal-content {
+  --bg-color: #0a1630;
+  --bg-alt: rgba(6, 15, 33, 0.8);
+  border-color: rgba(56,163,245,0.3);
+  box-shadow: 0 0 70px rgba(56,163,245,0.25), 0 30px 80px rgba(0,0,0,0.7);
+  animation: modalPop 0.45s cubic-bezier(0.2, 1.2, 0.4, 1) both;
+}
+.modal-header h2 { color: var(--white); font-family: var(--font-display); }
+.modal-amount {
+  font-family: var(--font-display);
+  font-weight: 800;
+  color: var(--white);
+  text-shadow: 0 0 26px rgba(56,163,245,0.9);
+}
+.modal-detail-item svg { color: var(--accent-bright); }
+.modal-detail-item { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+.modal-detail-item:hover { transform: translateY(-2px); box-shadow: 0 0 20px rgba(56,163,245,0.3); }
+.modal-description strong { color: var(--white); }
+.modal-rejection-reason strong { color: #ff8a7d; }
+.modal-rejection-reason p { background: rgba(231,76,60,0.12); border-color: rgba(231,76,60,0.45); color: #ff8a7d; }
