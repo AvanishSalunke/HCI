@@ -53,7 +53,7 @@ const getCommitteeSponsorships = async (req, res) => {
 };
 const updateSponsorshipStatus = async (req, res) => {
   try {
-    const { status } = req.body;
+    const { status, adminNote } = req.body;
     if (status !== 'confirmed') {
       return res.status(400).json({ message: 'Status must be confirmed' });
     }
@@ -67,7 +67,10 @@ const updateSponsorshipStatus = async (req, res) => {
     // The pending check is part of the update, so a double click cannot add the amount twice.
     const updatedSponsorship = await Sponsorship.findOneAndUpdate(
       { _id: existing._id, status: 'pending' },
-      { status },
+      {
+        status,
+        ...(typeof adminNote === 'string' && adminNote.trim() ? { adminNote: adminNote.trim().slice(0, 1000) } : {}),
+      },
       { new: true, runValidators: true }
     );
     if (!updatedSponsorship) {

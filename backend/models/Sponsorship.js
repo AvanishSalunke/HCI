@@ -25,6 +25,16 @@ const sponsorshipSchema = new mongoose.Schema(
       enum: ['pending', 'confirmed'],
       default: 'pending',
     },
+    // faculty can leave a note for the admin when confirming
+    adminNote: {
+      type: String,
+      default: '',
+    },
+    // false until the admin has looked at the confirmed sponsorship
+    adminSeen: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

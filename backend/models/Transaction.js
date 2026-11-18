@@ -45,6 +45,16 @@ const transactionSchema = new mongoose.Schema(
       type: String,
       default: '',
     },
+    // faculty can leave a note for the admin when approving
+    adminNote: {
+      type: String,
+      default: '',
+    },
+    // false until the admin has looked at the approved expense
+    adminSeen: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

@@ -50,7 +50,7 @@ const getCommitteeTransactions = async (req, res) => {
 };
 const updateTransactionStatus = async (req, res) => {
   try {
-    const { status, rejectionReason } = req.body;
+    const { status, rejectionReason, adminNote } = req.body;
     if (!['approved', 'rejected'].includes(status)) {
       return res.status(400).json({ message: 'Status must be approved or rejected' });
     }
@@ -65,6 +65,9 @@ const updateTransactionStatus = async (req, res) => {
     // part of the update itself, so a double click cannot count the amount twice.
     const update = { status };
     if (status === 'rejected' && rejectionReason) update.rejectionReason = rejectionReason;
+    if (status === 'approved' && typeof adminNote === 'string' && adminNote.trim()) {
+      update.adminNote = adminNote.trim().slice(0, 1000);
+    }
     const updatedTransaction = await Transaction.findOneAndUpdate(
       { _id: existing._id, status: 'pending' },
       update,
