@@ -39,6 +39,7 @@ function CommitteeLogin() {
         username,
         password,
         role,
+        committee: committeeId,
       };
       
       const response = await axios.post(
