@@ -1,7 +1,9 @@
 # Runs on every push to main.
 #   1. "Build and checks": the website builds, the code has no lint errors, the backend files are valid.
 #      This also runs on pull requests.
-#   2. "Wait for live deploy": only for pushes to main. Waits until Render is serving this exact
+#   2. "Start Render deploy": tells Render to deploy this exact commit, using the deploy hooks
+#      saved as secrets (RENDER_DEPLOY_HOOK_API and RENDER_DEPLOY_HOOK_WEB).
+#   3. "Wait for live deploy": only for pushes to main. Waits until Render is serving this exact
 #      commit, on both the website and the backend. When it is, the commit gets a green tick.
 name: Deploy check
 
@@ -39,9 +41,27 @@ jobs:
             node --check "$f"
           done
 
+  trigger:
+    name: Start Render deploy
+    needs: build
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ask Render to deploy this commit
+        env:
+          HOOK_API: ${{ secrets.RENDER_DEPLOY_HOOK_API }}
+          HOOK_WEB: ${{ secrets.RENDER_DEPLOY_HOOK_WEB }}
+        run: |
+          if [ -z "$HOOK_API" ] || [ -z "$HOOK_WEB" ]; then
+            echo "The deploy hook secrets are not set. Render must deploy this commit by itself."
+            exit 0
+          fi
+          curl -fsS -X POST "${HOOK_API}&ref=${GITHUB_SHA}" > /dev/null && echo "Backend deploy requested"
+          curl -fsS -X POST "${HOOK_WEB}&ref=${GITHUB_SHA}" > /dev/null && echo "Website deploy requested"
+
   live:
     name: Wait for live deploy
-    needs: build
+    needs: [build, trigger]
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 20
