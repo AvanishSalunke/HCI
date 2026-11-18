@@ -2,7 +2,11 @@ const Announcement = require('../models/Announcement');
 
 const createAnnouncement = async (req, res) => {
   try {
-    const { title, body } = req.body;
+    const title = typeof req.body.title === 'string' ? req.body.title.trim() : '';
+    const body = typeof req.body.body === 'string' ? req.body.body.trim() : '';
+    if (!title || !body) {
+      return res.status(400).json({ message: 'Please add a title and a body' });
+    }
     const announcement = new Announcement({
       title,
       body,
