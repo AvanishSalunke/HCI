@@ -1,21 +1,44 @@
 const Transaction = require('../models/Transaction');
 const Fund = require('../models/Fund');
+
+// Turns a mongoose validation problem into a readable 400 instead of "Server Error".
+const sendError = (res, error) => {
+  if (error.name === 'ValidationError') {
+    const message = Object.values(error.errors).map(e => e.message).join('. ');
+    return res.status(400).json({ message });
+  }
+  if (error.name === 'CastError') {
+    return res.status(404).json({ message: 'Transaction not found' });
+  }
+  console.error(error);
+  return res.status(500).json({ message: 'Server Error' });
+};
+
 const createTransaction = async (req, res) => {
   try {
     const { title, amount, category, description, receiptLink } = req.body;
+    const value = parseFloat(amount);
+    if (!Number.isFinite(value) || value <= 0) {
+      return res.status(400).json({ message: 'Please enter an amount greater than zero' });
+    }
     const transaction = new Transaction({
-      title, amount: parseFloat(amount), category, description, receiptLink,
-      user: req.user._id, committee: req.user.committee,
+      title: typeof title === 'string' ? title.trim() : title,
+      amount: value,
+      category,
+      description,
+      receiptLink: typeof receiptLink === 'string' ? receiptLink.trim() : receiptLink,
+      user: req.user._id,
+      committee: req.user.committee,
     });
     const createdTransaction = await transaction.save();
     res.status(201).json(createdTransaction);
-  } catch (error) { res.status(500).json({ message: 'Server Error' }); }
+  } catch (error) { sendError(res, error); }
 };
 const getStudentTransactions = async (req, res) => {
   try {
     const transactions = await Transaction.find({ user: req.user._id }).sort({ createdAt: -1 });
     res.json(transactions);
-  } catch (error) { res.status(500).json({ message: 'Server Error' }); }
+  } catch (error) { sendError(res, error); }
 };
 const getCommitteeTransactions = async (req, res) => {
   try {
@@ -23,31 +46,42 @@ const getCommitteeTransactions = async (req, res) => {
       .sort({ createdAt: -1 })
       .populate('user', 'username');
     res.json(transactions);
-  } catch (error) { res.status(500).json({ message: 'Server Error' }); }
+  } catch (error) { sendError(res, error); }
 };
 const updateTransactionStatus = async (req, res) => {
   try {
     const { status, rejectionReason } = req.body;
-    const transaction = await Transaction.findById(req.params.id);
-    if (!transaction) {
+    if (!['approved', 'rejected'].includes(status)) {
+      return res.status(400).json({ message: 'Status must be approved or rejected' });
+    }
+    const existing = await Transaction.findById(req.params.id);
+    if (!existing) {
       return res.status(404).json({ message: 'Transaction not found' });
     }
-    if (transaction.committee !== req.user.committee) {
+    if (existing.committee !== req.user.committee) {
       return res.status(401).json({ message: 'Not authorized' });
     }
-    const wasPending = transaction.status === 'pending';
-    transaction.status = status;
-    if (status === 'rejected' && rejectionReason) {
-      transaction.rejectionReason = rejectionReason;
+    // Only a pending request can be decided, and only once. The status check is
+    // part of the update itself, so a double click cannot count the amount twice.
+    const update = { status };
+    if (status === 'rejected' && rejectionReason) update.rejectionReason = rejectionReason;
+    const updatedTransaction = await Transaction.findOneAndUpdate(
+      { _id: existing._id, status: 'pending' },
+      update,
+      { new: true, runValidators: true }
+    );
+    if (!updatedTransaction) {
+      return res.status(400).json({ message: 'This expense has already been reviewed' });
     }
-    const updatedTransaction = await transaction.save();
-    if (wasPending && status === 'approved') {
-      const fund = await Fund.findOrCreate(req.user.committee);
-      fund.totalExpenses += transaction.amount;
-      await fund.save();
+    if (status === 'approved') {
+      await Fund.findOrCreate(req.user.committee);
+      await Fund.updateOne(
+        { committee: req.user.committee },
+        { $inc: { totalExpenses: updatedTransaction.amount } }
+      );
     }
     res.json(updatedTransaction);
-  } catch (error) { res.status(500).json({ message: 'Server Error' }); }
+  } catch (error) { sendError(res, error); }
 };
 module.exports = {
   createTransaction,
