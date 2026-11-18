@@ -38,7 +38,7 @@ function Faculty() {
         
         {/* We use the global .committee-grid-layout class */}
         <div className="committee-grid-layout">
-          {mockFaculty.map((faculty, index) => (
+          {mockFaculty.map((faculty) => (
             // This is the "perfected" vertical card
             <div
               className="card faculty-card-vertical"
