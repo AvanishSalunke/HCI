@@ -48,3 +48,11 @@
 .announcement-list-card:nth-child(n+4) { animation-delay: 0.18s; }
 .announcement-list-card:hover { transform: translateX(4px); }
 .announcement-content h3 { font-family: var(--font-display); }
+
+
+/* -- Mobile -- */
+@media (max-width: 768px) {
+  .announcement-list-card { padding: 1.1rem 1.1rem; }
+  .full-announcements-list { gap: 1rem; }
+  .announcement-list-card:hover { transform: none; }
+}
