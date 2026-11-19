@@ -25,13 +25,26 @@ export const registerServiceWorker = () => {
   });
 };
 
+// Gets this device's push subscription, creating one if it has none yet.
+const getOrCreateSubscription = async () => {
+  const { data } = await axios.get(`${API_BASE}/api/push/key`);
+  if (!data.publicKey) return null;
+  const reg = await navigator.serviceWorker.ready;
+  return (await reg.pushManager.getSubscription())
+    || (await reg.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(data.publicKey),
+    }));
+};
+
 // Tells the server about this device. Sends the login token if there is one,
 // so notifications can be aimed at this person (and stop after logout).
+// If permission was already given but the first save failed (for example because
+// the server was asleep), this subscribes the device now instead of giving up.
 export const syncSubscription = async () => {
   if (!pushSupported() || Notification.permission !== 'granted') return;
   try {
-    const reg = await navigator.serviceWorker.ready;
-    const sub = await reg.pushManager.getSubscription();
+    const sub = await getOrCreateSubscription();
     if (!sub) return;
     await axios.post(`${API_BASE}/api/push/subscribe`, { subscription: sub.toJSON() }, authHeaders());
   } catch (err) {
@@ -46,14 +59,8 @@ export const enableNotifications = async () => {
   const permission = await Notification.requestPermission();
   if (permission !== 'granted') return permission;
   try {
-    const { data } = await axios.get(`${API_BASE}/api/push/key`);
-    if (!data.publicKey) return 'unavailable';
-    const reg = await navigator.serviceWorker.ready;
-    const sub = (await reg.pushManager.getSubscription())
-      || (await reg.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(data.publicKey),
-      }));
+    const sub = await getOrCreateSubscription();
+    if (!sub) return 'unavailable';
     await axios.post(`${API_BASE}/api/push/subscribe`, { subscription: sub.toJSON() }, authHeaders());
     return 'granted';
   } catch (err) {
